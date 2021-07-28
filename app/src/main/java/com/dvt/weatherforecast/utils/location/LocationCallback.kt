@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class LocationCallback @Inject constructor(
+class GetLocation @Inject constructor(
     private val client: FusedLocationProviderClient
 ) {
     @SuppressLint("MissingPermission")

@@ -12,6 +12,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.dvt.weatherforecast.R
+import com.dvt.weatherforecast.data.models.Weather
+import com.dvt.weatherforecast.databinding.FragmentWeatherBinding
 import com.google.android.material.snackbar.Snackbar
 
 fun View.visible(isVisible: Boolean) {
@@ -140,4 +142,73 @@ internal inline fun <reified T> Activity.navigateTo(
 
     startActivity(intent)
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+}
+
+private fun FragmentWeatherBinding.updateBackgrounds(thisColor: Int, drawable: Drawable) {
+    root.setBackgroundColor(
+        ContextCompat.getColor(this.root.context, thisColor)
+    )
+
+    weatherLayout.background = drawable
+}
+
+fun FragmentWeatherBinding.changeBackground(weather: Weather) {
+    val id = weather.id.toString()
+    val context = root.context
+
+    when {
+
+        //Thunderstorm
+        id.startsWith("2", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+        }
+
+        //drizzle
+        id.startsWith("3", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
+
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+        }
+
+        // Rain
+        id.startsWith("5", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
+
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+        }
+
+        //Snow
+        id.startsWith("6", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
+
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+        }
+
+        //Atmosphere
+        id.startsWith("7", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
+
+            updateBackgrounds(R.color.colorCloudy, cloudyBackground!!)
+        }
+
+        //sunny/clear
+
+        id.equals("800", true) -> {
+            val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_sunny)
+
+            updateBackgrounds(R.color.colorSunny, cloudyBackground!!)
+        }
+
+        // cloudy
+        weather.id > 800 -> {
+
+            val cloudy = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
+
+            updateBackgrounds(R.color.colorCloudy, cloudy!!)
+
+        }
+
+
+    }
 }
