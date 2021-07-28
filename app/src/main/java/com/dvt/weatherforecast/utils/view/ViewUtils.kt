@@ -12,8 +12,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.dvt.weatherforecast.R
-import com.dvt.weatherforecast.data.models.Weather
-import com.dvt.weatherforecast.databinding.FragmentWeatherBinding
+import com.dvt.weatherforecast.data.models.db.LocationEntity
+import com.dvt.weatherforecast.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 fun View.visible(isVisible: Boolean) {
@@ -144,7 +144,7 @@ internal inline fun <reified T> Activity.navigateTo(
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
 
-private fun FragmentWeatherBinding.updateBackgrounds(thisColor: Int, drawable: Drawable) {
+private fun ActivityMainBinding.updateBackgrounds(thisColor: Int, drawable: Drawable) {
     root.setBackgroundColor(
         ContextCompat.getColor(this.root.context, thisColor)
     )
@@ -152,8 +152,8 @@ private fun FragmentWeatherBinding.updateBackgrounds(thisColor: Int, drawable: D
     weatherLayout.background = drawable
 }
 
-fun FragmentWeatherBinding.changeBackground(weather: Weather) {
-    val id = weather.id.toString()
+fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
+    val id = locationEntity.weatherCondition
     val context = root.context
 
     when {
@@ -201,7 +201,7 @@ fun FragmentWeatherBinding.changeBackground(weather: Weather) {
         }
 
         // cloudy
-        weather.id > 800 -> {
+        id.toInt() > 800 -> {
 
             val cloudy = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
 

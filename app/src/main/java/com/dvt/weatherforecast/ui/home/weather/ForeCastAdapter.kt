@@ -6,26 +6,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dvt.weatherforecast.R
-import com.dvt.weatherforecast.data.models.Daily
+import com.dvt.weatherforecast.data.models.db.ForeCastEntity
 import com.dvt.weatherforecast.databinding.LayoutForecastItemBinding
 import com.dvt.weatherforecast.utils.convertTimeStamp
 
-class ForeCastAdapter : ListAdapter<Daily, ForeCastAdapter.ForeCastViewHolder>(diffUtil) {
+class ForeCastAdapter : ListAdapter<ForeCastEntity, ForeCastAdapter.ForeCastViewHolder>(diffUtil) {
 
     inner class ForeCastViewHolder(private val binding: LayoutForecastItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Daily) {
+        fun bind(item: ForeCastEntity) {
             with(binding) {
-                tvDateName.text = convertTimeStamp(item.dt.toLong())
-                tvWeatherValue.text = item.temp.day.toInt().toString() + " \u2103"
+                tvDateName.text = convertTimeStamp(item.lastUpdated)
+                tvWeatherValue.text = item.normalTemp.toString() + " \u2103"
 
+                val id = item.weatherCondition
 
-                val condition = item.weather[0]
-
-                val id = condition.id.toString()
-
-                val context = binding.root.context
 
                 when {
 
@@ -63,7 +59,7 @@ class ForeCastAdapter : ListAdapter<Daily, ForeCastAdapter.ForeCastViewHolder>(d
                     }
 
                     // cloudy
-                    condition.id > 800 -> {
+                    id.toInt() > 800 -> {
                         updateBackgrounds(R.drawable.partlysunny)
 
                     }
@@ -98,12 +94,12 @@ class ForeCastAdapter : ListAdapter<Daily, ForeCastAdapter.ForeCastViewHolder>(d
 
 }
 
-val diffUtil = object : DiffUtil.ItemCallback<Daily>() {
-    override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return oldItem.dt == newItem.dt
+val diffUtil = object : DiffUtil.ItemCallback<ForeCastEntity>() {
+    override fun areItemsTheSame(oldItem: ForeCastEntity, newItem: ForeCastEntity): Boolean {
+        return oldItem.day == newItem.day
     }
 
-    override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
+    override fun areContentsTheSame(oldItem: ForeCastEntity, newItem: ForeCastEntity): Boolean {
         return oldItem == newItem
     }
 

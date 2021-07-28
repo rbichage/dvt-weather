@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/colorSunny"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,8 +55,7 @@
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/tv_temp"
             app:layout_constraintEnd_toEndOf="@+id/tv_temp"
-            app:layout_constraintStart_toStartOf="@+id/tv_temp"
-            tools:text="Nairobi" />
+            app:layout_constraintStart_toStartOf="@+id/tv_temp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -74,14 +72,12 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@+id/tv_min_value"
-        app:layout_constraintTop_toBottomOf="@+id/weather_layout"
-        tools:text="10" />
+        app:layout_constraintTop_toBottomOf="@+id/weather_layout" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_current_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="15"
         android:textColor="@android:color/white"
         android:textStyle="bold"
 
@@ -94,7 +90,6 @@
         android:id="@+id/tv_max_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="20"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_max_value"
@@ -155,10 +150,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_min_value"
         tools:itemCount="5"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/layout_forecast_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

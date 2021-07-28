@@ -15,6 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherForecast">
+
+        <activity
+            android:name=".ui.cities.CitiesActivity"
+            android:theme="@style/Theme.WeatherForecast.Cities" />
         <activity android:name=".ui.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

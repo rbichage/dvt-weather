@@ -45,8 +45,6 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
 
     // Tests
     testImplementation 'junit:junit:4.13.2'
@@ -105,5 +103,11 @@ dependencies {
     implementation("com.karumi:dexter:6.2.3")
 
     implementation 'androidx.palette:palette-ktx:1.0.0'
+
+    //ROOM
+    //room
+    implementation("androidx.room:room-runtime:2.3.0")
+    kapt("androidx.room:room-compiler:2.3.0")
+    implementation("androidx.room:room-ktx:2.3.0")
 
 }
