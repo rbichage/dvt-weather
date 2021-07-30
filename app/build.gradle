@@ -26,7 +26,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            manifestPlaceholders = [MAPS_API_KEY:"83495304975n"]
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            manifestPlaceholders = [MAPS_API_KEY:"83495304975n"]
         }
     }
     compileOptions {
