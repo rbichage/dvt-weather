@@ -4,4 +4,7 @@
     <string name="min">Min</string>
     <string name="current">Current</string>
     <string name="max">Max</string>
+    <string name="current_location">Current location</string>
+    <string name="map">Map</string>
+    <string name="cities">List</string>
 </resources>

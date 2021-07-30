@@ -5,6 +5,7 @@ import com.dvt.weatherforecast.R
 import com.dvt.weatherforecast.network.ApiService
 import com.dvt.weatherforecast.utils.network.loggingInterceptor
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +24,11 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
 
-    private var BASE_URL = "api.openweathermap.org/data/2.5/"
+    private var BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
     @Provides
     @WeatherApiKey
+    @Singleton
     fun provideApiKey(@ApplicationContext context: Context): String =
         context.getString(R.string.api_key)
 
@@ -42,7 +44,6 @@ object NetworkModule {
                 val request = chain.request()
                 val authRequest = request.newBuilder()
                     .header("Content-Type", "application/json")
-                    .header("fcm", apiKey)
                     .build()
 
 
@@ -55,6 +56,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
         .build()
 
     @Provides

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cities_navigation"
+    app:startDestination="@id/locationsListFragment">
+
+    <fragment
+        android:id="@+id/locationsListFragment"
+        android:name="com.dvt.weatherforecast.ui.cities.LocationsListFragment"
+        android:label="fragment_cities_list"
+        tools:layout="@layout/fragment_cities_list">
+        <action
+            android:id="@+id/action_citiesListFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.dvt.weatherforecast.ui.cities.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_citiesListFragment"
+            app:destination="@id/locationsListFragment"
+            app:popUpTo="@id/cities_navigation"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
