@@ -27,7 +27,6 @@
 
         <activity
             android:name=".ui.search.SearchActivity"
-            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WeatherForecast.Cities"
             tools:ignore="LockedOrientationActivity" />
