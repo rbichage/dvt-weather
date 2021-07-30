@@ -20,6 +20,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
@@ -37,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         initializePlaces()
         observeViewModel()
         setupViews()
@@ -57,7 +59,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 false -> {
-                    dialog?.cancel()
+                    dialog?.dismiss()
 
                 }
             }
@@ -82,11 +84,24 @@ class SearchActivity : AppCompatActivity() {
 
                     override fun placeSelected(place: CustomPlaceDetails) {
                         //save to Db
+                        Timber.e("place details $place")
                         getFromLocation(place)
                     }
 
-                    override fun onNoConnection() {
+                    override fun onError(e: Exception) {
                         //show error
+
+                        lifecycleScope.launchWhenStarted {
+                            hideSoftInput()
+                            showErrorDialog(
+                                    message = "Unable to complete your request, try again later",
+                                    positiveText = "Retry",
+                                    negativeText = "Cancel",
+                                    positiveAction = { },
+                                    negativeAction = { onBackPressed() }
+                            )
+                        }
+
                     }
 
                     override fun hideKeyboard() {
@@ -105,11 +120,12 @@ class SearchActivity : AppCompatActivity() {
             viewModel.getDataFromLocation(location).collect { response ->
                 when (response) {
                     is ApiResponse.Success -> {
-                        viewModel.insertNewToDb(response.value)
-                        dialog?.cancel()
+                        viewModel.insertNewToDb(response.value, place.name)
+                        dialog?.dismiss()
                         onBackPressed()
                     }
                     is ApiResponse.Failure -> {
+                        dialog?.dismiss()
                         showErrorDialog(
                                 message = response.errorHolder.message,
                                 positiveText = "Retry",
@@ -127,6 +143,8 @@ class SearchActivity : AppCompatActivity() {
         with(binding.placesRecycler) {
             adapter = placesAutoCompleteAdapter
         }
+
+
 
         binding.etSearch.addTextChangedListener { editable ->
             when {

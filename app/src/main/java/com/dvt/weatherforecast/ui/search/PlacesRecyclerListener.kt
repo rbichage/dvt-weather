@@ -6,6 +6,6 @@ interface PlacesRecyclerListener {
     fun requestStarted()
     fun requestSuccessful()
     fun placeSelected(place: CustomPlaceDetails)
-    fun onNoConnection()
+    fun onError(e: Exception)
     fun hideKeyboard()
 }

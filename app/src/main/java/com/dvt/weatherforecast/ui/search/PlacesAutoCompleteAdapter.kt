@@ -76,7 +76,7 @@ class PlacesAutoCompleteAdapter(
         try {
             Tasks.await(results, 60, TimeUnit.SECONDS)
         } catch (e: Exception) {
-            placesRecyclerListener.onNoConnection()
+            placesRecyclerListener.onError(e)
             e.printStackTrace()
         }
 
@@ -135,7 +135,7 @@ class PlacesAutoCompleteAdapter(
             }
         } catch (exception: IOException) {
             exception.printStackTrace()
-            placesRecyclerListener.onNoConnection()
+            placesRecyclerListener.onError(exception)
         }
 
 

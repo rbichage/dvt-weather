@@ -11,25 +11,25 @@ import com.dvt.weatherforecast.network.ApiService
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
-    private val apiService: ApiService,
-    @NetworkModule.WeatherApiKey private val apiKey: String,
-    private val foreCastDao: ForeCastDao,
-    val locationDao: LocationDao,
+        private val apiService: ApiService,
+        @NetworkModule.WeatherApiKey private val apiKey: String,
+        private val foreCastDao: ForeCastDao,
+        val locationDao: LocationDao,
 ) : BaseRepository() {
 
     suspend fun getByLocation(location: Location) = apiCall {
         apiService.getCurrentByLocation(
-            location.latitude.toString(),
-            location.longitude.toString(),
-            apiKey
+                location.latitude.toString(),
+                location.longitude.toString(),
+                apiKey
         )
     }
 
     suspend fun getForeCastByLocation(location: Location) = apiCall {
         apiService.getForecastByLocation(
-            location.latitude.toString(),
-            location.longitude.toString(),
-            apiKey
+                location.latitude.toString(),
+                location.longitude.toString(),
+                apiKey
         )
     }
 
@@ -39,9 +39,15 @@ class HomeRepository @Inject constructor(
     suspend fun insertCurrentLocation(locationEntity: LocationEntity) =
             locationDao.insertLocation(locationEntity)
 
-    fun getCurrentLocation() = locationDao.getAllLocation()
+    fun getAllLocations() = locationDao.getAllLocation()
 
     suspend fun deleteCurrentLocation() = locationDao.deleteCurrentLocation(1)
 
     fun getAllForeCasts() = foreCastDao.getAllForeCasts()
+
+    fun getCurrentLocation() = locationDao.getCurrentLocation()
+
+    suspend fun deleteLocation(locationEntity: LocationEntity) = locationDao.deleteLocation(locationEntity)
+
+    fun updateLocation(locationEntity: LocationEntity) = locationDao.updateLocation(locationEntity)
 }

@@ -2,16 +2,21 @@ package com.dvt.weatherforecast.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.location.Address
 import android.location.Location
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
+import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.databinding.ActivityMainBinding
+import com.dvt.weatherforecast.mappers.toNewLocationEntity
 import com.dvt.weatherforecast.ui.cities.LocationsActivity
 import com.dvt.weatherforecast.ui.home.weather.ForeCastAdapter
 import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
+import com.dvt.weatherforecast.utils.convertToDateTime
 import com.dvt.weatherforecast.utils.location.isLocationEnabled
 import com.dvt.weatherforecast.utils.network.ApiResponse
 import com.dvt.weatherforecast.utils.permmissions.isLocationPermissionEnabled
@@ -61,7 +66,7 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun getItemsFromDb() {
         lifecycleScope.launchWhenStarted {
-            homeViewModel.getCurrentCity().collect { locationEntities ->
+            homeViewModel.getAllLocations().collect { locationEntities ->
 
                 Timber.e("locations $locationEntities")
                 if (locationEntities.isNotEmpty()) {
@@ -86,7 +91,7 @@ class HomeActivity : AppCompatActivity() {
                         with(binding) {
                             tvLocationName.setAdapter(adapter)
                             tvLocationName.setText(current.name, false)
-
+                            tvLastUpdated.text = "Last updated: ${convertToDateTime(current.lastUpdated)}"
                             tvTemp.text = current.normalTemp.toString() + " \u2103"
                             tvWeatherDesc.text = current.weatherConditionName
                             tvMinTitle.text = current.lowTemp.toString() + " \u2103"
@@ -103,7 +108,7 @@ class HomeActivity : AppCompatActivity() {
                                     longitude = entity.lng
                                 }
 
-                                getFromLocation(location)
+                                getFromLocation(location, false, entity)
                             }
 
                         }
@@ -134,7 +139,7 @@ class HomeActivity : AppCompatActivity() {
         with(homeViewModel) {
             currentLocation.observe(this@HomeActivity) { location ->
                 Timber.e("location is $location")
-                getFromLocation(location)
+                getFromLocation(location, true)
 
             }
 
@@ -146,7 +151,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getFromLocation(location: Location) {
+    private fun getFromLocation(location: Location, geocodeResult: Boolean, entity: LocationEntity? = null) {
         lifecycleScope.launchWhenStarted {
             homeViewModel.getDataFromLocation(location).collect { response ->
 
@@ -157,19 +162,26 @@ class HomeActivity : AppCompatActivity() {
                                 message = response.errorHolder.message,
                                 positiveText = "Retry",
                                 negativeText = "Cancel",
-                                positiveAction = { getFromLocation(location) },
+                                positiveAction = { getFromLocation(location, geocodeResult, entity) },
                                 negativeAction = { onBackPressed() }
                         )
                     }
                     is ApiResponse.Success -> {
 
 
-                        UserPreferences.saveLatestLocation(response.value.name)
+                        if (geocodeResult) {
+                            geoCodeLocation(location, response.value)
 
-                        homeViewModel.deleteCurrentLocation()
-                                .invokeOnCompletion {
-                                    homeViewModel.insertCurrentToDb(response.value)
-                                }
+                        } else {
+
+                            val locationName = entity?.name ?: ""
+                            val newEntity = response.value.toNewLocationEntity(locationName)
+
+                            homeViewModel.deleteEntity(entity!!).invokeOnCompletion {
+                                homeViewModel.insertNewToDb(newEntity)
+                            }
+
+                        }
                     }
                 }
             }
@@ -191,6 +203,29 @@ class HomeActivity : AppCompatActivity() {
 
                     }
                 }
+            }
+        }
+    }
+
+    private fun geoCodeLocation(location: Location, response: CurrentWeatherResponse) {
+
+        lifecycleScope.launchWhenStarted {
+            homeViewModel.geoCodeThisLocation(location).collect { address: Address ->
+
+                Timber.e("address details $address")
+                var locationName = address.getAddressLine(0)
+
+                if (locationName.trim().isEmpty()) {
+                    // pick admin area
+                    locationName = address.subLocality
+                }
+
+                UserPreferences.saveLatestLocation(locationName)
+                homeViewModel.deleteCurrentLocation()
+                        .invokeOnCompletion {
+                            homeViewModel.insertCurrentToDb(response, locationName)
+                        }
+
             }
         }
     }
