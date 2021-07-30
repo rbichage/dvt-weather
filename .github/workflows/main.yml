@@ -22,23 +22,23 @@ jobs:
       - name: Access MAPS_API_KEY
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-      run: echo MAPS_API_KEY=\"MAPS_API_KEY\" > ./local.properties
+        run: echo MAPS_API_KEY=\"MAPS_API_KEY\" > ./local.properties
 
-        - name: Access OPEN_WEATHER_API_KEY
-            env:
-              MAPS_API_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
-          run: echo OPEN_WEATHER_KEY=\"OPEN_WEATHER_KEY\" > ./local.properties
+      - name: Access OPEN_WEATHER_API_KEY
+        env:
+          MAPS_API_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
+        run: echo OPEN_WEATHER_KEY=\"OPEN_WEATHER_KEY\" > ./local.properties
 
-        - name: Cache gradle
-          uses: actions/cache@v1
-          with:
-            path: ~/.gradle/caches
-            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-            restore-keys: |
-              ${{ runner.os }}-gradle-
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-        - name: Make gradlew executable
-          run: chmod +x ./gradlew
+          - name: Make gradlew executable
+            run: chmod +x ./gradlew
 
-        - name: Run Unit Tests
-          run: ./gradlew test
+          - name: Run Unit Tests
+            run: ./gradlew test
