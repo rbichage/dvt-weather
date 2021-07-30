@@ -12,14 +12,20 @@ interface LocationDao {
     suspend fun insertLocation(locationEntity: LocationEntity)
 
 
-    @Query("SELECT *FROM cities WHERE locationName LIKE :cityName")
+    @Query("SELECT *FROM locations WHERE locationName LIKE :cityName")
     fun getCurrentLocation(cityName: String): Flow<List<LocationEntity>>
 
-    @Query("SELECT * FROM cities")
+    @Query("SELECT * FROM locations ORDER BY lastUpdated DESC")
     fun getAllLocation(): Flow<List<LocationEntity>>
 
     @Delete
     suspend fun deleteLocation(locationEntity: LocationEntity)
+
+    @Query("DELETE FROM locations")
+    suspend fun nukeTable()
+
+    @Query("DELETE FROM locations WHERE isCurrent =:isCurrent")
+    suspend fun deleteCurrentLocation(isCurrent: Int = 1)
 
 }
 

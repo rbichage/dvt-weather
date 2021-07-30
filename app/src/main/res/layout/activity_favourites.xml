@@ -44,7 +44,6 @@
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"
-        app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/cities_navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

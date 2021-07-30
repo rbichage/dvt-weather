@@ -1,4 +1,4 @@
-package com.dvt.weatherforecast.ui.home
+package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import android.location.Location
@@ -7,17 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
+import com.dvt.weatherforecast.mappers.toCurrentLocationEntity
 import com.dvt.weatherforecast.mappers.toForeCastEntity
-import com.dvt.weatherforecast.mappers.toLocationEntity
-import com.dvt.weatherforecast.ui.home.weather.HomeRepository
+import com.dvt.weatherforecast.mappers.toNewLocationEntity
 import com.dvt.weatherforecast.utils.location.GetLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +32,12 @@ class HomeViewModel @Inject constructor(
         get() = _currentLocation
 
 
-    fun getCurrentLocation() = viewModelScope.launch(Dispatchers.IO) {
+    private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading
+        get() = _isLoading
+
+
+    fun getCurrentLocation() = viewModelScope.launch(IO) {
 
         getLocation.fetchCurrentLocation().collect { location ->
             _currentLocation.postValue(location)
@@ -41,8 +46,9 @@ class HomeViewModel @Inject constructor(
     }
 
     suspend fun getDataFromLocation(location: Location) = flow {
-
+        _isLoading.value = true
         emit(homeRepository.getByLocation(location))
+        _isLoading.value = false
     }
 
     suspend fun getForeCastFromLocation(location: Location) = flow {
@@ -54,8 +60,11 @@ class HomeViewModel @Inject constructor(
         currentLocation: String
     ) =
         viewModelScope.launch(IO) {
-            val entities = oneShotForeCastResponse.toForeCastEntity(currentLocation)
+            val entities = oneShotForeCastResponse.toForeCastEntity(currentLocation).toMutableList()
 
+            entities.removeAt(0)
+
+            Timber.e("entities $entities")
             for (entity in entities) {
                 homeRepository.insertForeCast(entity)
             }
@@ -63,9 +72,19 @@ class HomeViewModel @Inject constructor(
         }
 
     fun insertCurrentToDb(response: CurrentWeatherResponse) = viewModelScope.launch(IO) {
-        val current = response.toLocationEntity()
+        val current = response.toCurrentLocationEntity()
         homeRepository.insertCurrentLocation(current)
     }
+
+    fun insertNewToDb(response: CurrentWeatherResponse) = viewModelScope.launch(IO) {
+        val current = response.toNewLocationEntity()
+        homeRepository.insertCurrentLocation(current)
+    }
+
+    suspend fun deleteCurrentLocation() = viewModelScope.launch {
+        homeRepository.deleteCurrentLocation()
+    }
+
 
     fun getForecasts() = homeRepository.getAllForeCasts()
 

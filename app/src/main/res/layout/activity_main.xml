@@ -33,17 +33,32 @@
             app:layout_constraintVertical_bias=".35"
             tools:text="15" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_city_name"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/locations_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:textColor="@android:color/white"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="1dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_temp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_temp"
-            app:layout_constraintStart_toStartOf="@+id/tv_temp"
-            tools:text="Nairobi" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/tv_location_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="none"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@android:color/white"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textview.MaterialTextView
@@ -58,6 +73,15 @@
             app:layout_constraintStart_toStartOf="@+id/tv_temp"
             app:layout_constraintTop_toBottomOf="@+id/tv_temp"
             tools:text="Rainy" />
+
+        <TextView
+            android:id="@+id/tv_last_updated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/tv_temp"
+            app:layout_constraintStart_toStartOf="@+id/tv_temp"
+            tools:layout_editor_absoluteY="209dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -171,7 +195,8 @@
         app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/black" />
+        app:tint="@android:color/black"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

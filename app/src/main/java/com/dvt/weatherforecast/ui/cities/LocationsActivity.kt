@@ -6,7 +6,7 @@ import com.dvt.weatherforecast.databinding.ActivityFavouritesBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CitiesActivity : AppCompatActivity() {
+class LocationsActivity : AppCompatActivity() {
     private val binding: ActivityFavouritesBinding by lazy {
         ActivityFavouritesBinding.inflate(layoutInflater)
     }

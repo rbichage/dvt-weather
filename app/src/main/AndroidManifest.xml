@@ -16,8 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherForecast">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
         <activity
-            android:name=".ui.cities.CitiesActivity"
+            android:name=".ui.search.SearchActivity"
+            android:exported="true"
+            android:theme="@style/Theme.WeatherForecast.Cities" />
+        <activity
+            android:name=".ui.cities.LocationsActivity"
             android:theme="@style/Theme.WeatherForecast.Cities" />
         <activity android:name=".ui.home.HomeActivity">
             <intent-filter>

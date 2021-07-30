@@ -18,7 +18,7 @@ fun convertTimeStamp(currentTime: Long): String {
     Timber.d("convertTimeStamp: $epoch")
     Timber.e("current time ${System.currentTimeMillis()}")
 
-    val dateFormat = SimpleDateFormat("EEE", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
 
     return dateFormat.format(Date(epoch))
 }

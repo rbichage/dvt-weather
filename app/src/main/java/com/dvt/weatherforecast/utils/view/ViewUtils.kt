@@ -5,15 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.dvt.weatherforecast.R
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 fun View.visible(isVisible: Boolean) {
@@ -58,7 +61,7 @@ fun View.showSnackbar(message: String, length: Int) {
 
 internal fun View.setBackgroundTint(context: Context, color: Int) {
     backgroundTintList = ColorStateList.valueOf(
-        ContextCompat.getColor(context, color)
+            ContextCompat.getColor(context, color)
     )
 }
 
@@ -78,7 +81,7 @@ fun View.showSuccessSnackbar(message: String, length: Int) {
 
     snackbar.apply {
         this.setBackgroundTint(
-            ContextCompat.getColor(view.context, R.color.colorPrimary)
+                ContextCompat.getColor(view.context, R.color.colorPrimary)
         )
         this.setTextColor(ContextCompat.getColor(this.context, android.R.color.white))
         show()
@@ -97,9 +100,9 @@ fun Activity.getView(): View {
 fun bitMapFromDrawable(drawable: Drawable): Bitmap? {
 
     val bitmap = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
     )
     val canvas = Canvas(bitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)
@@ -126,8 +129,8 @@ fun View.showRetrySnackBar(message: String, action: ((View) -> Unit)?) {
 }
 
 internal inline fun <reified T> Activity.navigateTo(
-    clearTask: Boolean = false,
-    noinline intentExtras: ((Intent) -> Unit)? = null
+        clearTask: Boolean = false,
+        noinline intentExtras: ((Intent) -> Unit)? = null
 ) {
 
     val intent = Intent(this, T::class.java)
@@ -144,13 +147,25 @@ internal inline fun <reified T> Activity.navigateTo(
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
 
-private fun ActivityMainBinding.updateBackgrounds(thisColor: Int, drawable: Drawable) {
+fun ActivityMainBinding.updateBackgrounds(
+        thisColor: Int,
+        drawable: Drawable,
+        @DrawableRes drawableId: Int
+) {
     root.setBackgroundColor(
-        ContextCompat.getColor(this.root.context, thisColor)
+            ContextCompat.getColor(this.root.context, thisColor)
     )
 
     weatherLayout.background = drawable
+
+    root.context.getBitMap(drawableId)
+
 }
+
+fun Context.getBitMap(@DrawableRes resource: Int) = BitmapFactory.decodeResource(
+        resources, resource
+)
+
 
 fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
     val id = locationEntity.weatherCondition
@@ -161,35 +176,35 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
         //Thunderstorm
         id.startsWith("2", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
-            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         //drizzle
         id.startsWith("3", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
-            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         // Rain
         id.startsWith("5", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
-            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         //Snow
         id.startsWith("6", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
-            updateBackgrounds(R.color.colorRainy, cloudyBackground!!)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         //Atmosphere
         id.startsWith("7", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
 
-            updateBackgrounds(R.color.colorCloudy, cloudyBackground!!)
+            updateBackgrounds(R.color.colorCloudy, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         //sunny/clear
@@ -197,7 +212,7 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
         id.equals("800", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_sunny)
 
-            updateBackgrounds(R.color.colorSunny, cloudyBackground!!)
+            updateBackgrounds(R.color.colorSunny, cloudyBackground!!, R.drawable.forest_rainy)
         }
 
         // cloudy
@@ -205,10 +220,29 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
 
             val cloudy = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
 
-            updateBackgrounds(R.color.colorCloudy, cloudy!!)
+            updateBackgrounds(R.color.colorCloudy, cloudy!!, R.drawable.forest_rainy)
 
         }
 
 
     }
+
+}
+
+
+fun Context.showErrorDialog(message: String, positiveText: String, negativeText: String, positiveAction: ((Context) -> Unit)?, negativeAction: ((Context) -> Unit)?) {
+
+    MaterialAlertDialogBuilder(this)
+            .setTitle("Request Failed")
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton(positiveText) { dialog, which ->
+                dialog.dismiss()
+                positiveAction?.invoke(this)
+            }
+            .setNegativeButton(negativeText) { dialog, which ->
+                dialog.dismiss()
+                negativeAction?.invoke(this)
+            }
+            .show()
 }
