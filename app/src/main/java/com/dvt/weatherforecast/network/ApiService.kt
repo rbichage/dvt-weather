@@ -1,6 +1,5 @@
 package com.dvt.weatherforecast.network
 
-import com.dvt.weatherforecast.BuildConfig
 import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
 import retrofit2.http.GET
@@ -12,7 +11,7 @@ interface ApiService {
     suspend fun getCurrentByLocation(
             @Query("lat") lat: String,
             @Query("lon") lon: String,
-            @Query("appid") apiKey: String = BuildConfig.OPEN_WEATHER_KEY,
+            @Query("appid") apiKey: String,
             @Query("units") units: String = "metric"
 
     ): CurrentWeatherResponse
@@ -21,7 +20,7 @@ interface ApiService {
     suspend fun getForecastByLocation(
             @Query("lat") lat: String,
             @Query("lon") lon: String,
-            @Query("appid") apiKey: String = BuildConfig.OPEN_WEATHER_KEY,
+            @Query("appid") apiKey: String,
             @Query("units") units: String = "metric",
             @Query("exclude") exclude: String = "current,minutely,hourly,alerts"
     ): OneShotForeCastResponse
