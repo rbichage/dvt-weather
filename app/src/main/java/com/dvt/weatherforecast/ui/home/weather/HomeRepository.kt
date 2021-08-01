@@ -6,11 +6,13 @@ import com.dvt.weatherforecast.data.models.db.ForeCastEntity
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.db.ForeCastDao
 import com.dvt.weatherforecast.db.LocationDao
+import com.dvt.weatherforecast.di.NetworkModule
 import com.dvt.weatherforecast.network.ApiService
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
         private val apiService: ApiService,
+        @NetworkModule.WeatherApiKey private val apiKey: String,
         private val foreCastDao: ForeCastDao,
         val locationDao: LocationDao,
 ) : BaseRepository() {
@@ -19,13 +21,15 @@ class HomeRepository @Inject constructor(
         apiService.getCurrentByLocation(
                 location.latitude.toString(),
                 location.longitude.toString(),
+                apiKey
         )
     }
 
     suspend fun getForeCastByLocation(location: Location) = apiCall {
         apiService.getForecastByLocation(
                 location.latitude.toString(),
-                location.longitude.toString()
+                location.longitude.toString(),
+                apiKey
         )
     }
 
@@ -41,6 +45,9 @@ class HomeRepository @Inject constructor(
 
     fun getAllForeCasts() = foreCastDao.getAllForeCasts()
 
+    fun getCurrentLocation() = locationDao.getCurrentLocation()
+
     suspend fun deleteLocation(locationEntity: LocationEntity) = locationDao.deleteLocation(locationEntity)
 
+    fun updateLocation(locationEntity: LocationEntity) = locationDao.updateLocation(locationEntity)
 }
