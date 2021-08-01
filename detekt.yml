@@ -59,7 +59,7 @@ complexity:
     threshold: 10
     includeStaticDeclarations: false
   ComplexMethod:
-    active: true
+    active: false
     threshold: 10
     ignoreSingleWhenExpression: false
   LabeledExpression:
@@ -68,7 +68,7 @@ complexity:
     active: true
     threshold: 150
   LongMethod:
-    active: true
+    active: false
     threshold: 20
   MethodOverloading:
     active: false
@@ -149,7 +149,7 @@ exceptions:
   ThrowingNewInstanceOfSameException:
     active: false
   TooGenericExceptionCaught:
-    active: true
+    active: false
     exceptionNames:
       - ArrayIndexOutOfBoundsException
       - Error
