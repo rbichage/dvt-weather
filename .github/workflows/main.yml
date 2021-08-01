@@ -20,10 +20,10 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Access MAPS_API_KEY
+      - name: Access GOOGLE_MAPS_KEY
         env:
-          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-        run: echo MAPS_API_KEY=\"MAPS_API_KEY\" > ./local.properties
+          GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+        run: echo GOOGLE_MAPS_KEY=\"GOOGLE_MAPS_KEY\" > ./local.properties
 
       - name: Access OPEN_WEATHER_API_KEY
         env:

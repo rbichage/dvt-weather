@@ -65,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initializePlaces() {
-        Places.initialize(this, BuildConfig.MAPS_API_KEY)
+        Places.initialize(this, BuildConfig.GOOGLE_MAPS_KEY)
         placesClient = Places.createClient(this)
 
         val token = AutocompleteSessionToken.newInstance()
