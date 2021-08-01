@@ -5,7 +5,8 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id ("io.gitlab.arturbosch.detekt" )
 
 }
 
@@ -116,4 +117,18 @@ dependencies {
     //maps
     implementation("com.google.android.gms:play-services-maps:17.0.1")
 
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config = files("${project.rootDir}/detekt.yml")
+    baseline = file("${project.rootDir}/detekt-baseline.xml")
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        txt.enabled = true
+        sarif.enabled = true
+    }
 }
