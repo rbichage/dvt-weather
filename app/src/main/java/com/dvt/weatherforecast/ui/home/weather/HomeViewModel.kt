@@ -2,6 +2,7 @@ package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import android.location.Location
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,8 +35,7 @@ class HomeViewModel @Inject constructor(
 
 
     private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val isLoading
-        get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
 
     fun getCurrentLocation() = viewModelScope.launch(IO) {

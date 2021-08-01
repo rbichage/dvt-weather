@@ -60,7 +60,7 @@ class ForeCastAdapter : ListAdapter<ForeCastEntity, ForeCastAdapter.ForeCastView
 
                     // cloudy
                     id.toInt() > 800 -> {
-                        updateBackgrounds(R.drawable.partlysunny)
+                        updateBackgrounds(R.drawable.forest_cloudy)
 
                     }
 

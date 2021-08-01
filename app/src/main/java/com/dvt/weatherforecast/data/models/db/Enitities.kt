@@ -1,10 +1,13 @@
 package com.dvt.weatherforecast.data.models.db
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "locations")
+@Parcelize
 data class LocationEntity(
         @ColumnInfo(name = "locationName") val name: String,
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "lat") val lat: Double,
@@ -16,7 +19,7 @@ data class LocationEntity(
         @ColumnInfo(name = "isCurrent") val isCurrent: Boolean = false,
         @ColumnInfo(name = "condition") val weatherCondition: String,
         @ColumnInfo(name = "conditionName") val weatherConditionName: String,
-)
+) : Parcelable
 
 
 @Entity(tableName = "forecasts")

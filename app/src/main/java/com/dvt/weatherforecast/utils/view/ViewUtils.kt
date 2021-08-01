@@ -12,10 +12,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.dvt.weatherforecast.R
+import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.db.LocationEntity
-import com.dvt.weatherforecast.databinding.ActivityMainBinding
+import com.dvt.weatherforecast.databinding.ActivityHomeBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -147,7 +149,7 @@ internal inline fun <reified T> Activity.navigateTo(
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
 
-fun ActivityMainBinding.updateBackgrounds(
+fun ActivityHomeBinding.updateBackgrounds(
         thisColor: Int,
         drawable: Drawable,
         @DrawableRes drawableId: Int
@@ -167,16 +169,17 @@ fun Context.getBitMap(@DrawableRes resource: Int) = BitmapFactory.decodeResource
 )
 
 
-fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
-    val id = locationEntity.weatherCondition
+fun ActivityHomeBinding.changeBackground(locationEntity: LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap {
+    val id = locationEntity?.weatherCondition ?: weatherResponse!!.weather[0].id.toString()
     val context = root.context
 
-    when {
+    return when {
 
         //Thunderstorm
         id.startsWith("2", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
             updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
+            root.context.getBitMap(R.drawable.forest_rainy)
         }
 
         //drizzle
@@ -184,6 +187,8 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
             updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
+            root.context.getBitMap(R.drawable.forest_rainy)
+
         }
 
         // Rain
@@ -191,20 +196,26 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
             updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
+            root.context.getBitMap(R.drawable.forest_rainy)
+
         }
 
         //Snow
         id.startsWith("6", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_rainy)
 
-            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_rainy)
+            updateBackgrounds(R.color.colorRainy, cloudyBackground!!, R.drawable.forest_cloudy)
+            root.context.getBitMap(R.drawable.forest_rainy)
+
         }
 
         //Atmosphere
         id.startsWith("7", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
 
-            updateBackgrounds(R.color.colorCloudy, cloudyBackground!!, R.drawable.forest_rainy)
+            updateBackgrounds(R.color.colorCloudy, cloudyBackground!!, R.drawable.forest_cloudy)
+            root.context.getBitMap(R.drawable.forest_cloudy)
+
         }
 
         //sunny/clear
@@ -212,7 +223,9 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
         id.equals("800", true) -> {
             val cloudyBackground = ContextCompat.getDrawable(context, R.drawable.forest_sunny)
 
-            updateBackgrounds(R.color.colorSunny, cloudyBackground!!, R.drawable.forest_rainy)
+            updateBackgrounds(R.color.colorSunny, cloudyBackground!!, R.drawable.forest_sunny)
+            root.context.getBitMap(R.drawable.forest_sunny)
+
         }
 
         // cloudy
@@ -220,8 +233,12 @@ fun ActivityMainBinding.changeBackground(locationEntity: LocationEntity) {
 
             val cloudy = ContextCompat.getDrawable(context, R.drawable.forest_cloudy)
 
-            updateBackgrounds(R.color.colorCloudy, cloudy!!, R.drawable.forest_rainy)
+            updateBackgrounds(R.color.colorCloudy, cloudy!!, R.drawable.forest_cloudy)
+            root.context.getBitMap(R.drawable.forest_cloudy)
+        }
 
+        else -> {
+            root.context.getBitMap(R.drawable.forest_cloudy)
         }
 
 
@@ -246,3 +263,10 @@ fun Context.showErrorDialog(message: String, positiveText: String, negativeText:
             }
             .show()
 }
+
+fun Context.getBitmap(@DrawableRes resource: Int) = BitmapFactory.decodeResource(resources, resource)
+
+
+fun Context.createAlertDialog(): AlertDialog = MaterialAlertDialogBuilder(this).create()
+
+

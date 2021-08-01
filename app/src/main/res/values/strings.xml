@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
-    <string name="api_key">6c7bf29dfb31d2bd1392638ce4d25bf1</string>
     <string name="min">Min</string>
     <string name="current">Current</string>
     <string name="max">Max</string>

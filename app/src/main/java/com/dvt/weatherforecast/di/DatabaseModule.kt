@@ -37,7 +37,7 @@ object DatabaseModule {
 
 
     @Provides
-    fun provideCitiesDao(citesDatabase: LocationDatabase) = citesDatabase.citiesDao()
+    fun provideCitiesDao(citesDatabase: LocationDatabase) = citesDatabase.locationDao()
 
     @Provides
     fun provideForeCastDao(foreCastDatabase: ForeCastDatabase) = foreCastDatabase.foreCastDao()

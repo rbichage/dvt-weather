@@ -1,5 +1,7 @@
 package com.dvt.weatherforecast.ui.cities
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.databinding.FragmentCitiesListBinding
+import com.dvt.weatherforecast.ui.home.HomeActivity
 import com.dvt.weatherforecast.ui.search.SearchActivity
 import com.dvt.weatherforecast.utils.view.navigateTo
-import com.dvt.weatherforecast.utils.view.showSnackbar
+import com.dvt.weatherforecast.utils.view.showErrorSnackbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,21 +46,33 @@ class LocationsListFragment : Fragment() {
 
         locationsAdapter = LocationsAdapter(object : OnItemSelected {
             override fun onClick(locationEntity: LocationEntity) {
-                binding.root.showSnackbar(locationEntity.weatherConditionName, Snackbar.LENGTH_SHORT)
+
+                Intent(binding.root.context, HomeActivity::class.java).apply {
+                    putExtra("locationEntity", locationEntity)
+                    activity?.setResult(RESULT_OK, this)
+                    activity?.finish()
+                }
+
             }
 
             override fun onLongClick(locationEntity: LocationEntity) {
-                MaterialAlertDialogBuilder(binding.root.context)
-                        .setTitle("DELETE")
-                        .setMessage("Do you wish to delete ${locationEntity.name}?")
-                        .setPositiveButton("YES") { dialog, _ ->
-                            viewModel.deleteEntity(locationEntity)
-                            dialog.dismiss()
-                        }
-                        .setNegativeButton("CANCEL") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+
+                if (locationEntity.isCurrent) {
+                    binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_INDEFINITE)
+                } else {
+
+                    MaterialAlertDialogBuilder(binding.root.context)
+                            .setTitle("DELETE")
+                            .setMessage("Do you wish to delete ${locationEntity.name}?")
+                            .setPositiveButton("YES") { dialog, _ ->
+                                viewModel.deleteEntity(locationEntity)
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("CANCEL") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                }
             }
 
         })
