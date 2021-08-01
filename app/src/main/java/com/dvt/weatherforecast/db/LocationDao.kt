@@ -11,7 +11,7 @@ interface LocationDao {
     suspend fun insertLocation(locationEntity: LocationEntity)
 
 
-    @Query("SELECT * FROM locations ORDER BY lastUpdated DESC")
+    @Query("SELECT * FROM locations ORDER BY isCurrent DESC")
     fun getAllLocation(): Flow<List<LocationEntity>>
 
     @Delete

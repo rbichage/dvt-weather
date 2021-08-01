@@ -58,7 +58,7 @@ class LocationsListFragment : Fragment() {
             override fun onLongClick(locationEntity: LocationEntity) {
 
                 if (locationEntity.isCurrent) {
-                    binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_INDEFINITE)
+                    binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_LONG)
                 } else {
 
                     MaterialAlertDialogBuilder(binding.root.context)
