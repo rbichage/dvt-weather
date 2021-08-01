@@ -10,7 +10,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
