@@ -1,23 +1,24 @@
-name: Main Workflow
+name: Develop Workflow
 
 on:
   pull_request:
   push:
     branches:
-      - master
+      - develop
 
 
 jobs:
   build:
+
     runs-on: windows-latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: set up Java 11
+      - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
-          java-version: '11'
+          java-version: 1.8
 
       - name: Access MAPS_API_KEY
         env:
@@ -26,7 +27,7 @@ jobs:
 
       - name: Access OPEN_WEATHER_API_KEY
         env:
-          MAPS_API_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
+          OPEN_WEATHER_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
         run: echo OPEN_WEATHER_KEY=\"OPEN_WEATHER_KEY\" > ./local.properties
 
       - name: Cache gradle
