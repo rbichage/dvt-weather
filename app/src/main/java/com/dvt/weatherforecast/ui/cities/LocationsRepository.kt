@@ -1,5 +1,6 @@
 package com.dvt.weatherforecast.ui.cities
 
+import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.db.LocationDao
 import javax.inject.Inject
 
@@ -9,4 +10,5 @@ class LocationsRepository @Inject constructor(
 
     suspend fun getAllLocations() = locationDao.getAllLocation()
 
+    suspend fun deleteLocation(locationEntity: LocationEntity) = locationDao.deleteLocation(locationEntity)
 }

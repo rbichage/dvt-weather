@@ -2,11 +2,13 @@ package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import android.location.Location
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
+import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.mappers.toCurrentLocationEntity
 import com.dvt.weatherforecast.mappers.toForeCastEntity
 import com.dvt.weatherforecast.mappers.toNewLocationEntity
@@ -22,9 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getLocation: GetLocation,
-    private val geocoder: Geocoder,
-    private val homeRepository: HomeRepository
+        private val getLocation: GetLocation,
+        private val geocoder: Geocoder,
+        private val homeRepository: HomeRepository
 ) : ViewModel() {
 
     private var _currentLocation: MutableLiveData<Location> = MutableLiveData()
@@ -33,8 +35,7 @@ class HomeViewModel @Inject constructor(
 
 
     private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val isLoading
-        get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
 
     fun getCurrentLocation() = viewModelScope.launch(IO) {
@@ -42,6 +43,21 @@ class HomeViewModel @Inject constructor(
         getLocation.fetchCurrentLocation().collect { location ->
             _currentLocation.postValue(location)
             cancel("Location is $location")
+        }
+    }
+
+    suspend fun geoCodeThisLocation(thisLocation: Location) = flow {
+
+        try {
+            val addresses = geocoder.getFromLocation(thisLocation.latitude, thisLocation.longitude, 1)
+
+            if (addresses.isNotEmpty()) {
+                val address0 = addresses[0]
+                emit(address0)
+            }
+
+        } catch (e: Exception) {
+
         }
     }
 
@@ -56,38 +72,52 @@ class HomeViewModel @Inject constructor(
     }
 
     fun insertToForecastDb(
-        oneShotForeCastResponse: OneShotForeCastResponse,
-        currentLocation: String
+            oneShotForeCastResponse: OneShotForeCastResponse,
+            currentLocation: String
     ) =
-        viewModelScope.launch(IO) {
-            val entities = oneShotForeCastResponse.toForeCastEntity(currentLocation).toMutableList()
+            viewModelScope.launch(IO) {
+                val entities = oneShotForeCastResponse.toForeCastEntity(currentLocation).toMutableList()
 
-            entities.removeAt(0)
+                entities.removeAt(0)
 
-            Timber.e("entities $entities")
-            for (entity in entities) {
-                homeRepository.insertForeCast(entity)
+                Timber.e("entities $entities")
+                for (entity in entities) {
+                    homeRepository.insertForeCast(entity)
+                }
+
             }
 
-        }
-
-    fun insertCurrentToDb(response: CurrentWeatherResponse) = viewModelScope.launch(IO) {
-        val current = response.toCurrentLocationEntity()
+    fun insertCurrentToDb(response: CurrentWeatherResponse, locationName: String) = viewModelScope.launch(IO) {
+        val current = response.toCurrentLocationEntity(locationName)
         homeRepository.insertCurrentLocation(current)
     }
 
-    fun insertNewToDb(response: CurrentWeatherResponse) = viewModelScope.launch(IO) {
-        val current = response.toNewLocationEntity()
+    fun insertNewToDb(response: CurrentWeatherResponse, locationName: String) = viewModelScope.launch(IO) {
+
+        Timber.e("place name $locationName")
+        val current = response.toNewLocationEntity(locationName)
         homeRepository.insertCurrentLocation(current)
     }
 
-    suspend fun deleteCurrentLocation() = viewModelScope.launch {
+
+    fun insertNewToDb(locationEntity: LocationEntity) = viewModelScope.launch(IO) {
+
+        Timber.e("place name ${locationEntity.name}")
+        homeRepository.insertCurrentLocation(locationEntity)
+    }
+
+
+    suspend fun deleteCurrentLocation() = viewModelScope.launch(IO) {
         homeRepository.deleteCurrentLocation()
     }
 
 
     fun getForecasts() = homeRepository.getAllForeCasts()
 
-    fun getCurrentCity() = homeRepository.getCurrentLocation()
+    fun getAllLocations() = homeRepository.getAllLocations()
+
+    suspend fun deleteEntity(locationEntity: LocationEntity) = viewModelScope.launch(IO) {
+        homeRepository.deleteLocation(locationEntity)
+    }
 
 }

@@ -22,3 +22,10 @@ fun convertTimeStamp(currentTime: Long): String {
 
     return dateFormat.format(Date(epoch))
 }
+
+fun convertToDateTime(currentTime: Long): String {
+
+    val dateFormat = SimpleDateFormat("yyyy MMM dd', ' HH:mm", Locale.getDefault())
+
+    return dateFormat.format(Date(currentTime))
+}

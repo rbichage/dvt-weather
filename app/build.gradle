@@ -1,10 +1,12 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    id("com.android.application")
+    id("kotlin-android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.secrets_gradle_plugin' version '0.5'
+    id("kotlin-parcelize")
+
 
 }
 
@@ -27,6 +29,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

@@ -3,9 +3,8 @@
     <style name="Theme.WeatherForecast" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorSunny</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     </style>
 
     <style name="Theme.WeatherForecast.Cities" parent="Theme.MaterialComponents.Light.NoActionBar">

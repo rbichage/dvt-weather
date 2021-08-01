@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/colorSunny"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".ui.home.HomeActivity">
 
 
@@ -39,9 +39,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             app:boxStrokeColor="@android:color/white"
-            app:boxStrokeWidth="1dp"
-            app:hintEnabled="false"
-
+            app:boxStrokeWidth="1px"
             app:layout_constraintBottom_toTopOf="@+id/tv_temp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,9 +49,12 @@
                 android:id="@+id/tv_location_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:ellipsize="end"
                 android:inputType="none"
+                android:maxLines="1"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
+                android:singleLine="true"
                 tools:ignore="SpeakableTextPresentCheck" />
 
 
@@ -84,10 +85,10 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_weather_desc"
             tools:text="Last updated 2020-09-11, 15:34" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/img_refresh"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_updated"
@@ -95,6 +96,18 @@
             app:layout_constraintTop_toTopOf="@+id/tv_last_updated"
             app:srcCompat="@drawable/baseline_refresh_36"
             app:tint="@android:color/white" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:indeterminateTint="@android:color/holo_red_light"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/img_refresh"
+            app:layout_constraintEnd_toEndOf="@+id/img_refresh"
+            app:layout_constraintStart_toStartOf="@+id/img_refresh"
+            app:layout_constraintTop_toTopOf="@+id/img_refresh" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -204,11 +217,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/city_solid"
+        android:src="@drawable/outline_star_outline_24"
         app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/black"
+        app:tint="@color/colorPrimary"
         tools:ignore="SpeakableTextPresentCheck" />
 
 

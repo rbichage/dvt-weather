@@ -12,14 +12,15 @@ import com.dvt.weatherforecast.data.models.places.CustomPlaceDetails
 import com.dvt.weatherforecast.databinding.ActivitySearchBinding
 import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
 import com.dvt.weatherforecast.utils.network.ApiResponse
+import com.dvt.weatherforecast.utils.view.createAlertDialog
 import com.dvt.weatherforecast.utils.view.hideSoftInput
 import com.dvt.weatherforecast.utils.view.showErrorDialog
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
@@ -37,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         initializePlaces()
         observeViewModel()
         setupViews()
@@ -44,20 +46,18 @@ class SearchActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
 
-        val builder = MaterialAlertDialogBuilder(this)
-
-        dialog = builder.create()
+        val dialog = createAlertDialog()
 
         viewModel.isLoading.observe(this) {
             when (it) {
                 true -> {
-                    builder.setMessage("please wait")
-                    builder.setCancelable(false)
-                    dialog?.show()
+                    dialog.setMessage("please wait")
+                    dialog.setCancelable(false)
+                    dialog.show()
                 }
 
                 false -> {
-                    dialog?.cancel()
+                    dialog.dismiss()
 
                 }
             }
@@ -82,11 +82,24 @@ class SearchActivity : AppCompatActivity() {
 
                     override fun placeSelected(place: CustomPlaceDetails) {
                         //save to Db
+                        Timber.e("place details $place")
                         getFromLocation(place)
                     }
 
-                    override fun onNoConnection() {
+                    override fun onError(e: Exception) {
                         //show error
+
+                        lifecycleScope.launchWhenStarted {
+                            hideSoftInput()
+                            showErrorDialog(
+                                    message = "Unable to complete your request, try again later",
+                                    positiveText = "Retry",
+                                    negativeText = "Cancel",
+                                    positiveAction = { },
+                                    negativeAction = { onBackPressed() }
+                            )
+                        }
+
                     }
 
                     override fun hideKeyboard() {
@@ -105,11 +118,12 @@ class SearchActivity : AppCompatActivity() {
             viewModel.getDataFromLocation(location).collect { response ->
                 when (response) {
                     is ApiResponse.Success -> {
-                        viewModel.insertNewToDb(response.value)
-                        dialog?.cancel()
+                        viewModel.insertNewToDb(response.value, place.name)
+                        dialog?.dismiss()
                         onBackPressed()
                     }
                     is ApiResponse.Failure -> {
+                        dialog?.dismiss()
                         showErrorDialog(
                                 message = response.errorHolder.message,
                                 positiveText = "Retry",
@@ -127,6 +141,8 @@ class SearchActivity : AppCompatActivity() {
         with(binding.placesRecycler) {
             adapter = placesAutoCompleteAdapter
         }
+
+
 
         binding.etSearch.addTextChangedListener { editable ->
             when {
