@@ -13,7 +13,7 @@ import com.dvt.weatherforecast.utils.convertTimeStamp
 class ForeCastAdapter : ListAdapter<ForeCastEntity, ForeCastAdapter.ForeCastViewHolder>(diffUtil) {
 
     inner class ForeCastViewHolder(private val binding: LayoutForecastItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+            RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ForeCastEntity) {
             with(binding) {
@@ -55,12 +55,12 @@ class ForeCastAdapter : ListAdapter<ForeCastEntity, ForeCastAdapter.ForeCastView
                     //sunny/clear
 
                     id.equals("800", true) -> {
-                        updateBackgrounds(R.drawable.clear)
+                        updateBackgrounds(R.drawable.ic_brightness_sun)
                     }
 
                     // cloudy
                     id.toInt() > 800 -> {
-                        updateBackgrounds(R.drawable.forest_cloudy)
+                        updateBackgrounds(R.drawable.ic_baseline_cloud_queue_24)
 
                     }
 
@@ -78,11 +78,11 @@ class ForeCastAdapter : ListAdapter<ForeCastEntity, ForeCastAdapter.ForeCastView
     }
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): ForeCastAdapter.ForeCastViewHolder {
         return ForeCastViewHolder(
-            LayoutForecastItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LayoutForecastItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
