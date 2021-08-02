@@ -7,6 +7,6 @@
     <string name="map">Map</string>
     <string name="cities">List</string>
     <string name="title_activity_maps">MapsActivity</string>
-    <string name="api_key">{{Replace with your api key}}</string>
+    <string name="api_key">6c7bf29dfb31d2bd1392638ce4d25bf1</string>
 
 </resources>

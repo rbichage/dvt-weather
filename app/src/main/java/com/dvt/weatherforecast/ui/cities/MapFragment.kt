@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dvt.weatherforecast.BuildConfig
+import com.dvt.weatherforecast.R
 import com.dvt.weatherforecast.databinding.FragmentMapBinding
 import com.dvt.weatherforecast.ui.home.HomeActivity
 import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -82,6 +84,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             uiSettings.isMapToolbarEnabled = false
             uiSettings.isMyLocationButtonEnabled = false
             isMyLocationEnabled = true
+            setMapStyle(MapStyleOptions.loadRawResourceStyle(binding.root.context, R.raw.maps_style))
 
         }
 

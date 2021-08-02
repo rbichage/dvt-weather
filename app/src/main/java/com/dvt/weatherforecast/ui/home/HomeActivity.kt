@@ -59,7 +59,6 @@ class HomeActivity : AppCompatActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -181,7 +180,6 @@ class HomeActivity : AppCompatActivity() {
                     longitude = current.lng
                 }
 
-
                 getFromLocation(location, false, current)
 
             }
@@ -194,7 +192,6 @@ class HomeActivity : AppCompatActivity() {
                     latitude = entity.lat
                     longitude = entity.lng
                 }
-
 
                 getFromLocation(location, false, entity)
             }
@@ -241,63 +238,61 @@ class HomeActivity : AppCompatActivity() {
     private fun getFromLocation(location: Location, geocodeResult: Boolean, entity: LocationEntity? = null) {
         lifecycleScope.launchWhenStarted {
             homeViewModel.getDataFromLocation(location)
-            observeWeatherResponse(location, geocodeResult, entity)
 
-            homeViewModel.getForeCastFromLocation(location).collect { response ->
+            lifecycleScope.launchWhenStarted {
+                homeViewModel.getDataFromLocation(location).collect { response ->
 
-                when (response) {
-                    is ApiResponse.Success -> {
-                        val weatherData = response.value.daily
+                    when (response) {
 
-                        Timber.e("weather data ${response.value}")
-                        if (weatherData.isNotEmpty()) {
-                            homeViewModel.insertToForecastDb(
-                                    response.value,
-                                    UserPreferences.lastLocation
-                            )
+                        is ApiResponse.Success -> {
+
+
+                            if (geocodeResult) {
+                                geoCodeLocation(location, response.value)
+
+                            } else {
+                                updateViews(response.value)
+
+                            }
+                        }
+                        is ApiResponse.Failure -> {
+
+                            if (response.errorHolder.statusCode != 1) {
+                                showErrorDialog(
+                                        message = response.errorHolder.message,
+                                        positiveText = "Retry",
+                                        negativeText = "Cancel",
+                                        positiveAction = { getFromLocation(location, geocodeResult, entity) },
+                                        negativeAction = { onBackPressed() }
+                                )
+                            } else {
+                                binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
+                            }
+
                         }
                     }
-                    is ApiResponse.Failure -> {
+                }
 
+
+                homeViewModel.getForeCastFromLocation(location).collect { response ->
+
+                    when (response) {
+                        is ApiResponse.Success -> {
+                            val weatherData = response.value.daily
+
+                            if (weatherData.isNotEmpty()) {
+                                homeViewModel.insertToForecastDb(
+                                        response.value,
+                                        UserPreferences.lastLocation
+                                )
+                            }
+                        }
+                        is ApiResponse.Failure -> {
+
+                        }
                     }
                 }
             }
-        }
-    }
-
-    private fun observeWeatherResponse(location: Location, geocodeResult: Boolean, entity: LocationEntity?) {
-        homeViewModel.weatherResponse.observe(this@HomeActivity) { response ->
-            when (response) {
-
-                is ApiResponse.Success -> {
-                    Timber.e("response is ${response.value}")
-                    if (geocodeResult) {
-
-                        geoCodeLocation(location, response.value)
-
-                    } else {
-
-                        updateViews(response.value)
-
-                    }
-                }
-                is ApiResponse.Failure -> {
-
-                    if (response.errorHolder.statusCode != 1) {
-                        showErrorDialog(
-                                message = response.errorHolder.message,
-                                positiveText = "Retry",
-                                negativeText = "Cancel",
-                                positiveAction = { getFromLocation(location, geocodeResult, entity) },
-                                negativeAction = { onBackPressed() }
-                        )
-                    } else {
-                        binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
-                    }
-
-                }
-            }
-
         }
     }
 
@@ -332,6 +327,7 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 UserPreferences.saveLatestLocation(locationName)
+
                 homeViewModel.deleteCurrentLocation()
                         .invokeOnCompletion {
                             homeViewModel.insertCurrentToDb(response, locationName)

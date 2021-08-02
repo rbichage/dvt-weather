@@ -8,7 +8,6 @@ import com.dvt.weatherforecast.data.sample.SampleResponses.fakeWeatherResponse
 import com.dvt.weatherforecast.data.sample.SampleResponses.testLocation
 import com.dvt.weatherforecast.utils.location.GetLocation
 import com.dvt.weatherforecast.utils.network.ApiResponse
-import com.dvt.weatherforecast.utils.observeOnce
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -55,12 +54,11 @@ class HomeViewModelTests {
                 homeRepository.getByLocation(testLocation)
             } returns ApiResponse.Success(fakeWeatherResponse)
 
-            homeViewModel.getDataFromLocation(testLocation)
 
-            homeViewModel.weatherResponse.observeOnce {
+            homeViewModel.getDataFromLocation(testLocation).collect {
                 assertThat(it).isInstanceOf(ApiResponse.Success::class.java)
-            }
 
+            }
 
         }
     }
