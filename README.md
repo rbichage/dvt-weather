@@ -48,11 +48,8 @@ Develop an application that:
         * [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - is an observable data holder.
         * [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle) - perform action when lifecycle state changes.
         * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - store and manage UI-related data in a lifecycle conscious way.
-        * [Jetpack Navigation](https://developer.android.com/guide/navigation/navigation-getting-started) -  Implement navigation, from simple button clicks to more complex patterns, such as app bars and the navigation drawer
+        * [Jetpack Navigation](https://developer.android.com/guide/navigation/navigation-getting-started) -  Implement navigation, from simple button clicks to more complex patterns, such as app bars and the navigation drawer.
 
-
-    * [Stetho](http://facebook.github.io/stetho/) - application debugging tool.
-    * [Timber](https://github.com/JakeWharton/timber) - a highly extensible android logger.
     * [Leak Canary](https://github.com/square/leakcanary) - a memory leak detection library for Android.
 
 * Architecture
