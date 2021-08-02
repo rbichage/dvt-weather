@@ -1,10 +1,17 @@
 package com.dvt.weatherforecast.data.sample
 
+import android.location.Location
 import com.dvt.weatherforecast.data.models.*
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 
 
 object SampleResponses {
+
+    val testLocation = Location("this").apply {
+        latitude = -1.2907344085176307
+        longitude = 36.82093485505406
+    }
+
     val fakeWeatherResponse = CurrentWeatherResponse(
             base = "Random",
             clouds = Clouds(1),

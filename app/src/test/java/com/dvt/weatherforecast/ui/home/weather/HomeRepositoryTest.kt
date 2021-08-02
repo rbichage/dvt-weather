@@ -54,7 +54,7 @@ class HomeRepositoryTest : BaseTest() {
 
             val location = homeRepository.getAllLocations().first().toList()[0]
 
-            MatcherAssert.assertThat(location.name, `is`(SamplePayLoads.sampleLocation))
+            MatcherAssert.assertThat(location.name, `is`(SamplePayLoads.sampleLocation.name))
         }
     }
 

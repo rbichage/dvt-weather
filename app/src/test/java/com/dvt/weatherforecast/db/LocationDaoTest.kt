@@ -4,6 +4,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dvt.weatherforecast.BaseTest
 import com.dvt.weatherforecast.data.sample.SamplePayLoads
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -22,6 +23,7 @@ class LocationDaoTest : BaseTest() {
     val rule = InstantTaskExecutorRule()
 
 
+    @ExperimentalCoroutinesApi
     @Test
     fun `test insert and retrieve location`() = runBlockingTest {
         locationDao.insertLocation(locationEntity = SamplePayLoads.sampleLocation)

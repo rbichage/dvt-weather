@@ -11,6 +11,9 @@ import com.dvt.weatherforecast.dispatcher.WeatherRequestDispatcher
 import com.dvt.weatherforecast.network.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockWebServer
@@ -39,15 +42,22 @@ open class BaseTest {
     open fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
+        val testDispatcher = TestCoroutineDispatcher()
+        val testScope = TestCoroutineScope(testDispatcher)
+
         locationDatabase = Room.inMemoryDatabaseBuilder(context,
                 LocationDatabase::class.java)
                 .allowMainThreadQueries()
+                .setTransactionExecutor(testDispatcher.asExecutor())
+                .setQueryExecutor(testDispatcher.asExecutor())
                 .build()
 
         foreCastDatabase = Room.inMemoryDatabaseBuilder(
                 context,
                 ForeCastDatabase::class.java)
                 .allowMainThreadQueries()
+                .setTransactionExecutor(testDispatcher.asExecutor())
+                .setQueryExecutor(testDispatcher.asExecutor())
                 .build()
 
         foreCastDao = foreCastDatabase.foreCastDao()
