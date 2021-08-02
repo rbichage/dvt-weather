@@ -13,12 +13,10 @@ import com.dvt.weatherforecast.mappers.toCurrentLocationEntity
 import com.dvt.weatherforecast.mappers.toForeCastEntity
 import com.dvt.weatherforecast.mappers.toNewLocationEntity
 import com.dvt.weatherforecast.utils.location.GetLocation
-import com.dvt.weatherforecast.utils.network.ApiResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -65,7 +63,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getDataFromLocation(location: Location): Flow<ApiResponse<CurrentWeatherResponse>> = flow {
+    suspend fun getDataFromLocation(location: Location) = flow {
         _isLoading.value = true
         emit(homeRepository.getByLocation(location))
         _isLoading.value = false
