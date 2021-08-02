@@ -7,39 +7,45 @@ import com.dvt.weatherforecast.data.models.db.LocationEntity
 
 object SampleResponses {
 
+    val fakeForeCasts = OneShotForeCastResponse(
+            lat = -1.3177,
+            lon = 36.8441,
+            timezone = "Africa/Nairobi",
+            timezoneOffset = 10800,
+            daily = listOf(
+                    Daily(clouds = 66, dewPoint = 9.41, dt = 1627894800,
+                            feelsLike = FeelsLike(day = 21.73, eve = 17.4, morn = 11.24, night = 16.81),
+                            humidity = 44, moonPhase = 0.8, moonrise = 1627856640, moonset = 1627900860,
+                            pop = 0.34, pressure = 1018, sunrise = 1627875422, sunset = 1627918838,
+                            temp = Temp(day = 22.3, eve = 17.67, max = 23.02, min = 11.74, morn = 11.74, night = 17.16),
+                            uvi = 11.87,
+                            weather = listOf(
+                                    Weather(description = "light rain", icon = "10d", id = 500, main = "Rain")),
+                            windDeg = 150, windGust = 5.3, windSpeed = 3.59)
+            )
+    )
+
     val testLocation = Location("this").apply {
         latitude = -1.2907344085176307
         longitude = 36.82093485505406
     }
 
     val fakeWeatherResponse = CurrentWeatherResponse(
-            base = "Random",
-            clouds = Clouds(1),
-            cod = 100,
-            coord = Coord(-1.2907344085176307, 36.82093485505406),
-            dt = 100,
-            id = 800,
-            main = Main(
-                    feelsLike = 21.5,
-                    humidity = 5,
-                    pressure = 10,
-                    temp = 21.0,
-                    tempMax = 22.5,
-                    tempMin = 20.0
-            ),
-            name = "Random Name",
-            timezone = 3,
-            visibility = 1,
+            base = "stations",
+            clouds = Clouds(all = 75),
+            cod = 200,
+            coord = Coord(lat = -1.3177, lon = 36.8441),
+            dt = 1627922227,
+            id = 184736,
+            main =
+            Main(feelsLike = 19.8, humidity = 48, pressure = 1024, temp = 20.45, tempMax = 20.85, tempMin = 17.99),
+            name = "Nairobi South",
+            timezone = 10800,
+            visibility = 10000,
             weather = listOf(
-                    Weather(
-                            description = "Cloudy with a lot of clouds lol",
-                            icon = "dt4",
-                            id = 800,
-                            main = "Clouds"
-                    )
+                    Weather(description = "broken clouds", icon = "04 n", id = 803, main = "Clouds")
             ),
-            wind = Wind(20.0)
-    )
+            wind = Wind(speed = 3.6))
 
 
     val fakeLocations = listOf(

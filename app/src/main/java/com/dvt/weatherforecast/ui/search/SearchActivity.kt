@@ -19,7 +19,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -115,23 +114,30 @@ class SearchActivity : AppCompatActivity() {
                 longitude = place.latLng.longitude
             }
 
-            viewModel.getDataFromLocation(location).collect { response ->
-                when (response) {
-                    is ApiResponse.Success -> {
-                        viewModel.insertNewToDb(response.value, place.name)
-                        dialog?.dismiss()
-                        onBackPressed()
-                    }
-                    is ApiResponse.Failure -> {
-                        dialog?.dismiss()
-                        showErrorDialog(
-                                message = response.errorHolder.message,
-                                positiveText = "Retry",
-                                negativeText = "Cancel",
-                                positiveAction = { getFromLocation(place) },
-                                negativeAction = { onBackPressed() }
-                        )
-                    }
+            viewModel.getDataFromLocation(location)
+
+            observeWeatherResponse(place)
+
+        }
+    }
+
+    private fun observeWeatherResponse(place: CustomPlaceDetails) {
+        viewModel.weatherResponse.observe(this) { response ->
+            when (response) {
+                is ApiResponse.Success -> {
+                    viewModel.insertNewToDb(response.value, place.name)
+                    dialog?.dismiss()
+                    onBackPressed()
+                }
+                is ApiResponse.Failure -> {
+                    dialog?.dismiss()
+                    showErrorDialog(
+                            message = response.errorHolder.message,
+                            positiveText = "Retry",
+                            negativeText = "Cancel",
+                            positiveAction = { getFromLocation(place) },
+                            negativeAction = { onBackPressed() }
+                    )
                 }
             }
         }

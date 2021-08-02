@@ -2,7 +2,6 @@ package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import android.location.Location
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -36,14 +34,18 @@ class HomeViewModel @Inject constructor(
     val currentLocation
         get() = _currentLocation
 
+    private var _weatherResponse: MutableLiveData<ApiResponse<CurrentWeatherResponse>> = MutableLiveData()
+    val weatherResponse
+        get() = _weatherResponse
+
 
     private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val isLoading: LiveData<Boolean> = _isLoading
+    val isLoading
+        get() = _isLoading
 
 
     @ExperimentalCoroutinesApi
     fun getCurrentLocation() = viewModelScope.launch(IO) {
-
         getLocation.fetchCurrentLocation().collect { location ->
             _currentLocation.postValue(location)
             cancel("Location is $location")
@@ -65,10 +67,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getDataFromLocation(location: Location): Flow<ApiResponse<CurrentWeatherResponse>> = flow {
-        _isLoading.value = true
-        emit(homeRepository.getByLocation(location))
-        _isLoading.value = false
+    suspend fun getDataFromLocation(location: Location) = viewModelScope.launch {
+        _isLoading.postValue(true)
+        val result = homeRepository.getByLocation(location)
+        _weatherResponse.postValue(result)
+        _isLoading.postValue(false)
     }
 
     suspend fun getForeCastFromLocation(location: Location) = flow {

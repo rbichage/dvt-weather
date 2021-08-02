@@ -10,20 +10,23 @@ import java.net.HttpURLConnection
 
 open class WeatherRequestDispatcher : Dispatcher() {
     override fun dispatch(request: RecordedRequest): MockResponse {
-        return when (request.path) {
-            "/weather" -> {
-                MockResponse()
-                        .setResponseCode(HttpURLConnection.HTTP_OK)
-                        .setBody(getJson("json/weatherresponse.json"))
-            }
 
-            "/forecast" -> {
+        return when {
+            request.path!!.contains("weather", true) -> {
                 MockResponse()
                         .setResponseCode(HttpURLConnection.HTTP_OK)
                         .setBody(getJson("json/weatherresponse.json"))
             }
-            else -> throw IllegalArgumentException("Unknown path ${request.path}")
+            request.path!!.contains("onecall", true) -> {
+                MockResponse()
+                        .setResponseCode(HttpURLConnection.HTTP_OK)
+                        .setBody(getJson("json/forecast.json"))
+            }
+            else -> {
+                throw IllegalArgumentException("Unknown path ${request.path}")
+            }
         }
+
     }
 
 

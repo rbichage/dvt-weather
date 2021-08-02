@@ -59,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -180,6 +181,7 @@ class HomeActivity : AppCompatActivity() {
                     longitude = current.lng
                 }
 
+
                 getFromLocation(location, false, current)
 
             }
@@ -192,6 +194,7 @@ class HomeActivity : AppCompatActivity() {
                     latitude = entity.lat
                     longitude = entity.lng
                 }
+
 
                 getFromLocation(location, false, entity)
             }
@@ -225,6 +228,8 @@ class HomeActivity : AppCompatActivity() {
                 }
 
             }
+
+
         }
     }
 
@@ -235,39 +240,8 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun getFromLocation(location: Location, geocodeResult: Boolean, entity: LocationEntity? = null) {
         lifecycleScope.launchWhenStarted {
-            homeViewModel.getDataFromLocation(location).collect { response ->
-
-                when (response) {
-
-                    is ApiResponse.Success -> {
-
-
-                        if (geocodeResult) {
-                            geoCodeLocation(location, response.value)
-
-                        } else {
-
-                            updateViews(response.value)
-
-                        }
-                    }
-                    is ApiResponse.Failure -> {
-
-                        if (response.errorHolder.statusCode != 1) {
-                            showErrorDialog(
-                                    message = response.errorHolder.message,
-                                    positiveText = "Retry",
-                                    negativeText = "Cancel",
-                                    positiveAction = { getFromLocation(location, geocodeResult, entity) },
-                                    negativeAction = { onBackPressed() }
-                            )
-                        } else {
-                            binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
-                        }
-
-                    }
-                }
-            }
+            homeViewModel.getDataFromLocation(location)
+            observeWeatherResponse(location, geocodeResult, entity)
 
             homeViewModel.getForeCastFromLocation(location).collect { response ->
 
@@ -275,6 +249,7 @@ class HomeActivity : AppCompatActivity() {
                     is ApiResponse.Success -> {
                         val weatherData = response.value.daily
 
+                        Timber.e("weather data ${response.value}")
                         if (weatherData.isNotEmpty()) {
                             homeViewModel.insertToForecastDb(
                                     response.value,
@@ -287,6 +262,42 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun observeWeatherResponse(location: Location, geocodeResult: Boolean, entity: LocationEntity?) {
+        homeViewModel.weatherResponse.observe(this@HomeActivity) { response ->
+            when (response) {
+
+                is ApiResponse.Success -> {
+                    Timber.e("response is ${response.value}")
+                    if (geocodeResult) {
+
+                        geoCodeLocation(location, response.value)
+
+                    } else {
+
+                        updateViews(response.value)
+
+                    }
+                }
+                is ApiResponse.Failure -> {
+
+                    if (response.errorHolder.statusCode != 1) {
+                        showErrorDialog(
+                                message = response.errorHolder.message,
+                                positiveText = "Retry",
+                                negativeText = "Cancel",
+                                positiveAction = { getFromLocation(location, geocodeResult, entity) },
+                                negativeAction = { onBackPressed() }
+                        )
+                    } else {
+                        binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
+                    }
+
+                }
+            }
+
         }
     }
 

@@ -1,9 +1,9 @@
 package com.dvt.weatherforecast.ui.home.weather
 
-import android.location.Location
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dvt.weatherforecast.BaseTest
 import com.dvt.weatherforecast.data.sample.SamplePayLoads
+import com.dvt.weatherforecast.data.sample.SampleResponses
 import com.dvt.weatherforecast.utils.network.ApiResponse
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.first
@@ -20,7 +20,7 @@ import org.robolectric.annotation.Config
         sdk = [Config.OLDEST_SDK],
         manifest = Config.NONE
 ) // https://stackoverflow.com/questions/56821193/does-robolectric-require-java-9
-class HomeRepositoryTest : BaseTest() {
+class HomeRepositoryTests : BaseTest() {
 
     private lateinit var homeRepository: HomeRepository
 
@@ -36,12 +36,16 @@ class HomeRepositoryTest : BaseTest() {
     fun `test getting current weather from API`() {
         runBlocking {
 
-            val testLocation = Location("this").apply {
-                latitude = -1.2907344085176307
-                longitude = 36.82093485505406
-            }
+            val response = homeRepository.getByLocation(location = SampleResponses.testLocation)
 
-            val response = homeRepository.getByLocation(location = testLocation)
+            Truth.assertThat(response is ApiResponse.Success)
+        }
+    }
+
+    @Test
+    fun `test getting forecast from API`() {
+        runBlocking {
+            val response = homeRepository.getForeCastByLocation(location = SampleResponses.testLocation)
 
             Truth.assertThat(response is ApiResponse.Success)
         }
