@@ -30,6 +30,7 @@ class HomeActivityTests {
     @Test
     fun test_selectLocation() {
         Thread.sleep(2000)
+
         onView(withId(R.id.tv_location_name))
                 .perform(click())
 
@@ -39,7 +40,7 @@ class HomeActivityTests {
     fun test_navigateToLocations() {
         onView(withId(R.id.fab_cities))
                 .perform(click())
-
+        Thread.sleep(1000)
         pressBack()
     }
 }
