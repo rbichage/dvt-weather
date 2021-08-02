@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ComplexMethod:ViewUtils.kt$fun ActivityHomeBinding.changeBackground(locationEntity:
+      LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap
+    </ID>
+    <ID>EmptyCatchBlock:HomeViewModel.kt$HomeViewModel${ }</ID>
+    <ID>EmptyFunctionBlock:HomeActivity.kt$HomeActivity.&lt;no name provided&gt;${ }</ID>
+    <ID>EmptyFunctionBlock:LocationsActivity.kt$LocationsActivity.&lt;no name provided&gt;${ }</ID>
+    <ID>EmptyFunctionBlock:SearchActivity.kt$SearchActivity.&lt;no name provided&gt;${ }</ID>
+    <ID>LargeClass:HomeActivity.kt$HomeActivity : AppCompatActivity</ID>
+    <ID>LongMethod:BaseRepository.kt$BaseRepository$private fun extractHttpExceptions(e:
+      HttpException): ErrorHolder
+    </ID>
+    <ID>LongMethod:BaseRepository.kt$BaseRepository$suspend fun &lt;T&gt; apiCall(apiCall: suspend
+      () -&gt; T): ApiResponse&lt;T&gt;
+    </ID>
+    <ID>LongMethod:ForeCastAdapter.kt$ForeCastAdapter.ForeCastViewHolder$fun bind(item:
+      ForeCastEntity)
+    </ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$@SuppressLint("SetTextI18n") private fun
+      getFromLocation(location: Location, geocodeResult: Boolean, entity: LocationEntity? = null)
+    </ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$@SuppressLint("SetTextI18n") private fun
+      getItemsFromDb()
+    </ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$@SuppressLint("SetTextI18n") private fun
+      updateViewsFromDb(current: LocationEntity, locationEntities: List&lt;LocationEntity&gt;)
+    </ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$private fun observeViewModel()</ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$private fun registerResult()</ID>
+    <ID>LongMethod:HomeActivity.kt$HomeActivity$private fun updateStatusBarColor(bitMap: Bitmap)
+    </ID>
+    <ID>LongMethod:LocationsActivity.kt$LocationsActivity.&lt;no name provided&gt;$override fun
+      onTabSelected(tab: TabLayout.Tab?)
+    </ID>
+    <ID>LongMethod:MapFragment.kt$MapFragment$private fun setupMap(location: Location)</ID>
+    <ID>LongMethod:PlacesAutoCompleteAdapter.kt$PlacesAutoCompleteAdapter$fun
+      getLocationFromPlace(query: CharSequence): ArrayList&lt;CustomAddressModel&gt;?
+    </ID>
+    <ID>LongMethod:SearchActivity.kt$SearchActivity$private fun getFromLocation(place:
+      CustomPlaceDetails)
+    </ID>
+    <ID>LongMethod:ViewUtils.kt$fun ActivityHomeBinding.changeBackground(locationEntity:
+      LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap
+    </ID>
+    <ID>MagicNumber:BaseRepository.kt$BaseRepository$500</ID>
+    <ID>MagicNumber:BaseRepository.kt$BaseRepository$503</ID>
+    <ID>MagicNumber:DateUtils.kt$1000</ID>
+    <ID>MagicNumber:ForeCastAdapter.kt$ForeCastAdapter.ForeCastViewHolder$800</ID>
+    <ID>MagicNumber:MapExtensions.kt$100</ID>
+    <ID>MagicNumber:NetworkModule.kt$NetworkModule$30</ID>
+    <ID>MagicNumber:PlacesAutoCompleteAdapter.kt$PlacesAutoCompleteAdapter$60</ID>
+    <ID>MagicNumber:SearchActivity.kt$SearchActivity$3</ID>
+    <ID>MagicNumber:ViewUtils.kt$800</ID>
+    <ID>MatchingDeclarationName:LocationCallback.kt$GetLocation</ID>
+    <ID>MaxLineLength:ViewUtils.kt$fun</ID>
+    <ID>TooGenericExceptionCaught:BaseRepository.kt$BaseRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HomeViewModel.kt$HomeViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PlacesAutoCompleteAdapter.kt$PlacesAutoCompleteAdapter$e:
+      Exception
+    </ID>
+    <ID>TooManyFunctions:HomeActivity.kt$HomeActivity : AppCompatActivity</ID>
+    <ID>TooManyFunctions:HomeViewModel.kt$HomeViewModel : ViewModel</ID>
+    <ID>TooManyFunctions:ViewUtils.kt$com.dvt.weatherforecast.utils.view.ViewUtils.kt</ID>
+    <ID>WildcardImport:HomeActivity.kt$import com.dvt.weatherforecast.utils.view.*</ID>
+    <ID>WildcardImport:LocationDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:MapExtensions.kt$import android.graphics.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

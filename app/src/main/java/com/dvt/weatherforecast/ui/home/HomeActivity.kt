@@ -136,7 +136,6 @@ class HomeActivity : AppCompatActivity() {
 
                         Timber.e("dominant color is ${dominantSwatch?.rgb}")
 
-
                         if (dominantSwatch != null) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 val window: Window = window
