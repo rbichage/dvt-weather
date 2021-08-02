@@ -40,7 +40,7 @@ class HomeActivityTests {
     fun test_navigateToLocations() {
         onView(withId(R.id.fab_cities))
                 .perform(click())
-
+        Thread.sleep(1000)
         pressBack()
     }
 }
