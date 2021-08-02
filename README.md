@@ -33,7 +33,7 @@ Unit and UI tests can be found under androidTest and test sub modules
 
 ## Tools and Libraries
 - [detekt](https://detekt.github.io/detekt/) for static analysis
-- [Moshi]https://github.com/square/moshi) for Json to data class conversations.
+- [Moshi](https://github.com/square/moshi) for Json to data class conversations.
 - [Retrofit](https://square.github.io/retrofit/) for network calls.
 - [OKhttp](https://square.github.io/okhttp/) for network and logging.
 - [Hilt](https://dagger.dev/hilt/) for dependency injection.
