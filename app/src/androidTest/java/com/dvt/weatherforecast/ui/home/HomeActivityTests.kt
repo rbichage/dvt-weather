@@ -30,6 +30,7 @@ class HomeActivityTests {
     @Test
     fun test_selectLocation() {
         Thread.sleep(2000)
+
         onView(withId(R.id.tv_location_name))
                 .perform(click())
 
