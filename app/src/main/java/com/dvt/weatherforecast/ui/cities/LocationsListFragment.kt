@@ -51,6 +51,8 @@ class LocationsListFragment : Fragment() {
                     putExtra("locationEntity", locationEntity)
                     activity?.setResult(RESULT_OK, this)
                     activity?.finish()
+                    activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+
                 }
 
             }

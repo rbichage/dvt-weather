@@ -137,12 +137,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
     private fun setupViews() {
         with(binding.placesRecycler) {
             adapter = placesAutoCompleteAdapter
         }
 
-
+        binding.imgBack.setOnClickListener { onBackPressed() }
 
         binding.etSearch.addTextChangedListener { editable ->
             when {
