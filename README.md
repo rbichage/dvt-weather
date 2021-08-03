@@ -8,23 +8,12 @@
 
 ## Setup
  - Add `GOOGLE_MAPS_KEY` to your `local.properties` file
- - Add ``api_key`` to `strings.xml`
+ - Paster your open weather API key to ``api_key`` on `strings.xml`
  - Build the project
 
 
 
-To inspect the local db/cache, there are two ways to do it:
-
-Using Android Studio database inspector - Bump up the minimum version to 26, inside the `Dependencies.kt`
-
-```kotlin
-object AndroidSdk {
-    const val minSdkVersion = 26 // is set to 23 on the repo
-    ...
-}
-```
-
-Refer to this [issue](https://github.com/gradle/gradle/issues/10248), if you get any issues running the lint commands on the terminal :rocket:
+To inspect the local db/cache, run the project on a device with Android 8+
 
 ### Background
 
@@ -59,17 +48,12 @@ Develop an application that:
     * [MockK](https://github.com/mockk) - mocking library for Kotlin
     * [Kluent](https://github.com/MarkusAmshove/Kluent) - Fluent Assertion-Library for Kotlin
     * [Kakao](https://github.com/agoda-com/Kakao) - Nice and simple DSL for Espresso in Kotlin
-* Gradle
-    * [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) - For reference purposes, here's an [article explaining the migration](https://medium.com/@evanschepsiror/migrating-to-kotlin-dsl-4ee0d6d5c977).
+
     * Plugins
-        * [Ktlint](https://github.com/JLLeitschuh/ktlint-gradle) - creates convenient tasks in your Gradle project that run ktlint checks or do code auto format.
         * [Detekt](https://github.com/detekt/detekt) - a static code analysis tool for the Kotlin programming language.
-        * [Spotless](https://github.com/diffplug/spotless) - format java, groovy, markdown and license headers using gradle.
-        * [Dokka](https://github.com/Kotlin/dokka) - a documentation engine for Kotlin, performing the same function as javadoc for Java.
-        * [jacoco](https://github.com/jacoco/jacoco) - a Code Coverage Library
+      
 * CI/CD
     * Github Actions
-    * [Fastlane](https://fastlane.tools) - App automation done right
 
 
 
