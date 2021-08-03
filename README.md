@@ -46,8 +46,7 @@ Develop an application that:
 * Tests
     * [Unit Tests](https://en.wikipedia.org/wiki/Unit_testing) ([JUnit](https://junit.org/junit4/)) - a simple framework to write repeatable tests.
     * [MockK](https://github.com/mockk) - mocking library for Kotlin
-    * [Kluent](https://github.com/MarkusAmshove/Kluent) - Fluent Assertion-Library for Kotlin
-    * [Kakao](https://github.com/agoda-com/Kakao) - Nice and simple DSL for Espresso in Kotlin
+    * [Truth](https://github.com/google/truth) - Truth makes your test assertions and failure messages more readable.
 
     * Plugins
         * [Detekt](https://github.com/detekt/detekt) - a static code analysis tool for the Kotlin programming language.
