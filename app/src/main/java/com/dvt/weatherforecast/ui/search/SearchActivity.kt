@@ -19,7 +19,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -109,29 +108,27 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getFromLocation(place: CustomPlaceDetails) {
-        lifecycleScope.launchWhenStarted {
-            val location = Location("This").apply {
-                latitude = place.latLng.latitude
-                longitude = place.latLng.longitude
-            }
+        val location = Location("This").apply {
+            latitude = place.latLng.latitude
+            longitude = place.latLng.longitude
+        }
 
-            viewModel.getDataFromLocation(location).collect { response ->
-                when (response) {
-                    is ApiResponse.Success -> {
-                        viewModel.insertNewToDb(response.value, place.name)
-                        dialog?.dismiss()
-                        onBackPressed()
-                    }
-                    is ApiResponse.Failure -> {
-                        dialog?.dismiss()
-                        showErrorDialog(
-                                message = response.errorHolder.message,
-                                positiveText = "Retry",
-                                negativeText = "Cancel",
-                                positiveAction = { getFromLocation(place) },
-                                negativeAction = { onBackPressed() }
-                        )
-                    }
+        viewModel.getDataFromLocation(location).observe(this@SearchActivity) { response ->
+            when (response) {
+                is ApiResponse.Success -> {
+                    viewModel.insertNewToDb(response.value, place.name)
+                    dialog?.dismiss()
+                    onBackPressed()
+                }
+                is ApiResponse.Failure -> {
+                    dialog?.dismiss()
+                    showErrorDialog(
+                            message = response.errorHolder.message,
+                            positiveText = "Retry",
+                            negativeText = "Cancel",
+                            positiveAction = { getFromLocation(place) },
+                            negativeAction = { onBackPressed() }
+                    )
                 }
             }
         }

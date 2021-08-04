@@ -236,60 +236,58 @@ class HomeActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun getFromLocation(location: Location, geocodeResult: Boolean, entity: LocationEntity? = null) {
+        homeViewModel.getDataFromLocation(location)
+
         lifecycleScope.launchWhenStarted {
-            homeViewModel.getDataFromLocation(location)
+            homeViewModel.getDataFromLocation(location).observe(this@HomeActivity) { response ->
 
-            lifecycleScope.launchWhenStarted {
-                homeViewModel.getDataFromLocation(location).collect { response ->
+                when (response) {
 
-                    when (response) {
-
-                        is ApiResponse.Success -> {
+                    is ApiResponse.Success -> {
 
 
-                            if (geocodeResult) {
-                                geoCodeLocation(location, response.value)
+                        if (geocodeResult) {
+                            geoCodeLocation(location, response.value)
 
-                            } else {
-                                updateViews(response.value)
-
-                            }
-                        }
-                        is ApiResponse.Failure -> {
-
-                            if (response.errorHolder.statusCode != 1) {
-                                showErrorDialog(
-                                        message = response.errorHolder.message,
-                                        positiveText = "Retry",
-                                        negativeText = "Cancel",
-                                        positiveAction = { getFromLocation(location, geocodeResult, entity) },
-                                        negativeAction = { onBackPressed() }
-                                )
-                            } else {
-                                binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
-                            }
+                        } else {
+                            updateViews(response.value)
 
                         }
                     }
+                    is ApiResponse.Failure -> {
+
+                        if (response.errorHolder.statusCode != 1) {
+                            showErrorDialog(
+                                    message = response.errorHolder.message,
+                                    positiveText = "Retry",
+                                    negativeText = "Cancel",
+                                    positiveAction = { getFromLocation(location, geocodeResult, entity) },
+                                    negativeAction = { onBackPressed() }
+                            )
+                        } else {
+                            binding.root.showErrorSnackbar(response.errorHolder.message, Snackbar.LENGTH_LONG)
+                        }
+
+                    }
                 }
+            }
 
 
-                homeViewModel.getForeCastFromLocation(location).collect { response ->
+            homeViewModel.getForeCastFromLocation(location).collect { response ->
 
-                    when (response) {
-                        is ApiResponse.Success -> {
-                            val weatherData = response.value.daily
+                when (response) {
+                    is ApiResponse.Success -> {
+                        val weatherData = response.value.daily
 
-                            if (weatherData.isNotEmpty()) {
-                                homeViewModel.insertToForecastDb(
-                                        response.value,
-                                        UserPreferences.lastLocation
-                                )
-                            }
+                        if (weatherData.isNotEmpty()) {
+                            homeViewModel.insertToForecastDb(
+                                    response.value,
+                                    UserPreferences.lastLocation
+                            )
                         }
-                        is ApiResponse.Failure -> {
+                    }
+                    is ApiResponse.Failure -> {
 
-                        }
                     }
                 }
             }
@@ -315,25 +313,24 @@ class HomeActivity : AppCompatActivity() {
 
     private fun geoCodeLocation(location: Location, response: CurrentWeatherResponse) {
 
-        lifecycleScope.launchWhenStarted {
-            homeViewModel.geoCodeThisLocation(location).collect { address: Address ->
+        homeViewModel.geoCodeThisLocation(location).observe(this@HomeActivity) { address: Address ->
 
-                Timber.e("address details $address")
-                var locationName = address.getAddressLine(0)
+            Timber.e("address details $address")
+            var locationName = address.getAddressLine(0)
 
-                if (locationName.trim().isEmpty()) {
-                    // pick admin area
-                    locationName = address.subLocality
-                }
-
-                UserPreferences.saveLatestLocation(locationName)
-
-                homeViewModel.deleteCurrentLocation()
-                        .invokeOnCompletion {
-                            homeViewModel.insertCurrentToDb(response, locationName)
-                        }
-
+            if (locationName.trim().isEmpty()) {
+                // pick admin area
+                locationName = address.subLocality
             }
+
+            UserPreferences.saveLatestLocation(locationName)
+
+
+            homeViewModel.deleteCurrentLocation()
+                    .invokeOnCompletion {
+                        homeViewModel.insertCurrentToDb(response, locationName)
+                    }
+
         }
     }
 

@@ -2,10 +2,7 @@ package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import android.location.Location
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
 import com.dvt.weatherforecast.data.models.db.LocationEntity
@@ -48,7 +45,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun geoCodeThisLocation(thisLocation: Location) = flow {
+    fun geoCodeThisLocation(thisLocation: Location) = liveData {
 
         try {
             val addresses = geocoder.getFromLocation(thisLocation.latitude, thisLocation.longitude, 1)
@@ -63,7 +60,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getDataFromLocation(location: Location) = flow {
+    fun getDataFromLocation(location: Location) = liveData {
         _isLoading.value = true
         emit(homeRepository.getByLocation(location))
         _isLoading.value = false
@@ -109,7 +106,7 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    suspend fun deleteCurrentLocation() = viewModelScope.launch(IO) {
+    fun deleteCurrentLocation() = viewModelScope.launch(IO) {
         homeRepository.deleteCurrentLocation()
     }
 
