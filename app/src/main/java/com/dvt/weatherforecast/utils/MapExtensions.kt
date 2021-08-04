@@ -23,7 +23,7 @@ fun Context.getLocationIcon(): BitmapDescriptor {
     val vehicleIcon = ContextCompat.getDrawable(this, R.drawable.location_icon) as BitmapDrawable
 
 
-    val color = ContextCompat.getColor(this, R.color.colorPrimary)
+    val color = Color.RED
 
     val smallMarker = Bitmap.createScaledBitmap(vehicleIcon.bitmap, 100, 100, false)
 
@@ -35,8 +35,6 @@ fun Context.getLocationIcon(): BitmapDescriptor {
     return BitmapDescriptorFactory.fromBitmap(smallMarker)
 
 }
-
-
 
 
 

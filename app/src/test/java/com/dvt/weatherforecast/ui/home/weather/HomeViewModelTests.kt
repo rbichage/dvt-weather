@@ -8,6 +8,7 @@ import com.dvt.weatherforecast.data.sample.SampleResponses.fakeWeatherResponse
 import com.dvt.weatherforecast.data.sample.SampleResponses.testLocation
 import com.dvt.weatherforecast.utils.location.GetLocation
 import com.dvt.weatherforecast.utils.network.ApiResponse
+import com.dvt.weatherforecast.utils.observeOnce
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -18,9 +19,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest = Config.NONE)
 class HomeViewModelTests {
 
 
@@ -55,7 +58,7 @@ class HomeViewModelTests {
             } returns ApiResponse.Success(fakeWeatherResponse)
 
 
-            homeViewModel.getDataFromLocation(testLocation).collect {
+            homeViewModel.getDataFromLocation(testLocation).observeOnce {
                 assertThat(it).isInstanceOf(ApiResponse.Success::class.java)
 
             }
