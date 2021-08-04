@@ -28,13 +28,12 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _currentLocation: MutableLiveData<Location> = MutableLiveData()
-    val currentLocation
+    val currentLocation: LiveData<Location>
         get() = _currentLocation
 
 
     private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean> = _isLoading
-
 
     @ExperimentalCoroutinesApi
     fun getCurrentLocation() = viewModelScope.launch(IO) {
