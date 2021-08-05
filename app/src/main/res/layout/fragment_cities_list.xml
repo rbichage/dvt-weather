@@ -13,7 +13,7 @@
         android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="5"
+        tools:itemCount="15"
         tools:listitem="@layout/layout_city_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
