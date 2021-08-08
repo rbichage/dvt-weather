@@ -11,7 +11,10 @@ import com.dvt.weatherforecast.databinding.LayoutCityItemBinding
 import com.dvt.weatherforecast.utils.view.show
 import timber.log.Timber
 
-class LocationsAdapter(private val onItemSelected: OnItemSelected) :
+typealias onLocationSelected = (LocationEntity) -> Unit
+typealias onLongClick = (LocationEntity) -> Unit
+
+class LocationsAdapter(private val onLocationSelected: onLocationSelected, private val onLongClick: onLongClick) :
         ListAdapter<LocationEntity, LocationsAdapter.LocationViewHolder>(diffUtil) {
     inner class LocationViewHolder(private val binding: LayoutCityItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
@@ -25,10 +28,10 @@ class LocationsAdapter(private val onItemSelected: OnItemSelected) :
                 tvTemp.text = "${item.normalTemp} ℃"
                 tvCondition.text = item.weatherConditionName
 
-                root.setOnClickListener { onItemSelected.onClick(item) }
+                root.setOnClickListener { onLocationSelected.invoke(item) }
 
                 root.setOnLongClickListener {
-                    onItemSelected.onLongClick(item)
+                    onLongClick.invoke(item)
                     return@setOnLongClickListener true
                 }
             }

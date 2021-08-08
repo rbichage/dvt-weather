@@ -11,6 +11,7 @@ import com.dvt.weatherforecast.BuildConfig
 import com.dvt.weatherforecast.data.models.places.CustomPlaceDetails
 import com.dvt.weatherforecast.databinding.ActivitySearchBinding
 import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
+import com.dvt.weatherforecast.utils.StringUtils.capitalizeWords
 import com.dvt.weatherforecast.utils.network.ApiResponse
 import com.dvt.weatherforecast.utils.view.createAlertDialog
 import com.dvt.weatherforecast.utils.view.hideSoftInput
@@ -116,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
         viewModel.getDataFromLocation(location).observe(this@SearchActivity) { response ->
             when (response) {
                 is ApiResponse.Success -> {
-                    viewModel.insertNewToDb(response.value, place.name)
+                    viewModel.insertNewToDb(response.value, place.name.capitalizeWords())
                     dialog?.dismiss()
                     onBackPressed()
                 }
