@@ -71,12 +71,10 @@ class LocationsListFragment : Fragment() {
                                 }
                                 .show()
                     }
-
                 }
         )
 
         with(binding.citiesRecycler) {
-            setHasFixedSize(true)
             adapter = locationsAdapter
         }
 
@@ -89,8 +87,8 @@ class LocationsListFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.getLocations().collect { locations ->
                 Timber.e("locations $locations")
+
                 if (locations.isNotEmpty()) {
-                    binding.citiesRecycler.setItemViewCacheSize(locations.size)
                     locationsAdapter.submitList(locations)
                 }
             }

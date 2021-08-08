@@ -26,6 +26,7 @@ import com.dvt.weatherforecast.databinding.ActivityHomeBinding
 import com.dvt.weatherforecast.ui.cities.LocationsActivity
 import com.dvt.weatherforecast.ui.home.weather.ForeCastAdapter
 import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
+import com.dvt.weatherforecast.utils.StringUtils.capitalizeWords
 import com.dvt.weatherforecast.utils.convertToDateTime
 import com.dvt.weatherforecast.utils.location.isLocationEnabled
 import com.dvt.weatherforecast.utils.network.ApiResponse
@@ -169,7 +170,7 @@ class HomeActivity : AppCompatActivity() {
             tvLocationName.setText(current.name, false)
             tvLastUpdated.text = "Last updated: ${convertToDateTime(current.lastUpdated)}"
             tvTemp.text = current.normalTemp.toString() + " \u2103"
-            tvWeatherDesc.text = current.weatherConditionName
+            tvWeatherDesc.text = current.weatherConditionName.capitalizeWords()
             tvMinTitle.text = current.lowTemp.toString() + " \u2103"
             tvCurrentTitle.text = current.normalTemp.toString() + " \u2103"
             tvMaxTitle.text = current.highTemp.toString() + " \u2103"
@@ -303,7 +304,7 @@ class HomeActivity : AppCompatActivity() {
         with(binding) {
             tvLastUpdated.text = "Last updated: ${convertToDateTime(System.currentTimeMillis())}"
             tvTemp.text = "${response.main.temp.toInt()} ℃"
-            tvWeatherDesc.text = response.weather[0].main
+            tvWeatherDesc.text = response.weather[0].description.capitalizeWords()
             tvMinTitle.text = "${response.main.tempMin.toInt()} ℃"
             tvCurrentTitle.text = "${response.main.temp.toInt()} ℃"
             tvMaxTitle.text = "${response.main.tempMax.toInt()} ℃"

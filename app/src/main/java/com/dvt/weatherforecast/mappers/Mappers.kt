@@ -4,6 +4,7 @@ import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
 import com.dvt.weatherforecast.data.models.db.ForeCastEntity
 import com.dvt.weatherforecast.data.models.db.LocationEntity
+import com.dvt.weatherforecast.utils.StringUtils.capitalizeWords
 import com.dvt.weatherforecast.utils.convertTimeStamp
 import timber.log.Timber
 
@@ -22,7 +23,7 @@ fun CurrentWeatherResponse.toCurrentLocationEntity(locationName: String = ""): L
             lastUpdated = System.currentTimeMillis(),
             isCurrent = true,
             weatherCondition = weather[0].id.toString(),
-            weatherConditionName = weather[0].main
+            weatherConditionName = weather[0].description
     )
 }
 
@@ -41,7 +42,7 @@ fun CurrentWeatherResponse.toNewLocationEntity(locationName: String = ""): Locat
             lastUpdated = System.currentTimeMillis(),
             isCurrent = false,
             weatherCondition = weather[0].id.toString(),
-            weatherConditionName = weather[0].main
+            weatherConditionName = weather[0].description.capitalizeWords()
     )
 }
 
