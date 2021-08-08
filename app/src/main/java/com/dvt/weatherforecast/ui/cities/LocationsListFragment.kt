@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.databinding.FragmentCitiesListBinding
 import com.dvt.weatherforecast.ui.home.HomeActivity
 import com.dvt.weatherforecast.ui.search.SearchActivity
@@ -44,42 +43,40 @@ class LocationsListFragment : Fragment() {
 
     private fun setupViews() {
 
-        locationsAdapter = LocationsAdapter(object : OnItemSelected {
-            override fun onClick(locationEntity: LocationEntity) {
+        locationsAdapter = LocationsAdapter(
+                onLocationSelected = { locationEntity ->
+                    Intent(binding.root.context, HomeActivity::class.java).apply {
+                        putExtra("locationEntity", locationEntity)
+                        activity?.setResult(RESULT_OK, this)
+                        activity?.finish()
+                        activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
-                Intent(binding.root.context, HomeActivity::class.java).apply {
-                    putExtra("locationEntity", locationEntity)
-                    activity?.setResult(RESULT_OK, this)
-                    activity?.finish()
-                    activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    }
+                },
+
+                onLongClick = { locationEntity ->
+                    if (locationEntity.isCurrent) {
+                        binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_LONG)
+                    } else {
+
+                        MaterialAlertDialogBuilder(binding.root.context)
+                                .setTitle("DELETE")
+                                .setMessage("Do you wish to delete ${locationEntity.name}?")
+                                .setPositiveButton("YES") { dialog, _ ->
+                                    viewModel.deleteEntity(locationEntity)
+                                    dialog.dismiss()
+                                }
+                                .setNegativeButton("CANCEL") { dialog, _ ->
+                                    dialog.dismiss()
+                                }
+                                .show()
+                    }
 
                 }
-
-            }
-
-            override fun onLongClick(locationEntity: LocationEntity) {
-
-                if (locationEntity.isCurrent) {
-                    binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_LONG)
-                } else {
-
-                    MaterialAlertDialogBuilder(binding.root.context)
-                            .setTitle("DELETE")
-                            .setMessage("Do you wish to delete ${locationEntity.name}?")
-                            .setPositiveButton("YES") { dialog, _ ->
-                                viewModel.deleteEntity(locationEntity)
-                                dialog.dismiss()
-                            }
-                            .setNegativeButton("CANCEL") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .show()
-                }
-            }
-
-        })
+        )
 
         with(binding.citiesRecycler) {
+            setHasFixedSize(true)
             adapter = locationsAdapter
         }
 
@@ -92,8 +89,8 @@ class LocationsListFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.getLocations().collect { locations ->
                 Timber.e("locations $locations")
-
                 if (locations.isNotEmpty()) {
+                    binding.citiesRecycler.setItemViewCacheSize(locations.size)
                     locationsAdapter.submitList(locations)
                 }
             }
