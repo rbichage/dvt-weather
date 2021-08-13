@@ -8,7 +8,7 @@
 
 ## Setup
  - Add `GOOGLE_MAPS_KEY` to your `local.properties` file
- - Paster your open weather API key to ``api_key`` on `strings.xml`
+ - Paste your open weather API key to ``api_key`` on `strings.xml`
  - Build the project
 
 
