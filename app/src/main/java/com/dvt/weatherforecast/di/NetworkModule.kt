@@ -59,6 +59,7 @@ object NetworkModule {
             .add(KotlinJsonAdapterFactory())
             .build()
 
+
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()

@@ -41,6 +41,9 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -69,7 +72,14 @@ class HomeActivity : AppCompatActivity() {
         initViews()
         getItemsFromDb()
         observeViewModel()
+        setupAppCenter()
 
+    }
+
+    private fun setupAppCenter() {
+        AppCenter.start(
+                application, "a6a0acef-1c4f-4f58-8bd7-c013108ea4b3", Analytics::class.java, Crashes::class.java
+        )
     }
 
 
