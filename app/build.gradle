@@ -24,6 +24,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -54,6 +55,24 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
+
+String getApiKey() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+
+    properties.load(new FileInputStream(propFile))
+
+    return properties[OPEN_WEATHER_KEY]
+}
+
+String getAppCenterKey() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+
+    properties.load(new FileInputStream(propFile))
+
+    return properties[APP_CENTER_SECRET]
 }
 
 dependencies {
@@ -87,9 +106,6 @@ dependencies {
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.37'
     implementation 'androidx.fragment:fragment-ktx:1.3.6'
     testImplementation 'com.jraska.livedata:testing-ktx:1.2.0'
-
-
-
 
 
     // Design
