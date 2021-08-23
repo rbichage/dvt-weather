@@ -22,6 +22,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField ("String", "APP_CENTER_SECRET", getAppCenterKey())
+        buildConfigField ("String", "OPEN_WEATHER_KEY", getApiKey())
     }
 
 
