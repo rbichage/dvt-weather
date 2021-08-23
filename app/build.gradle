@@ -23,9 +23,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "APP_CENTER_SECRET", getAppCenterKey())
+        buildConfigField("String", "APP_CENTER_VALUE", getAppCenterKey())
         buildConfigField("String", "OPEN_WEATHER_KEY", getApiKey())
-        buildConfigField("String", "GOOGLE_MAPS_KEY", getAsMap())
+        buildConfigField("String", "GOOGLE_MAPS_KEY", getMapsApiKey())
     }
 
 
@@ -76,7 +76,7 @@ String getAppCenterKey() {
 
     properties.load(new FileInputStream(propFile))
 
-    return properties['APP_CENTER_SECRET']
+    return properties['APP_CENTER_VALUE']
 }
 
 String getMapsApiKey() {
