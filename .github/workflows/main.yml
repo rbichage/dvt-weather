@@ -25,6 +25,13 @@ jobs:
           OPEN_WEATHER_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
         run: echo OPEN_WEATHER_KEY=\"OPEN_WEATHER_KEY\" > ./local.properties
 
+      - name: Access APP_CENTER_SECRET
+        env:
+          APP_CENTER_SECRET: ${{ secrets.APP_CENTER_SECRET }}
+        run: echo APP_CENTER_SECRET=\"APP_CENTER_SECRET\" > ./local.properties
+
+
+
       - name: Access GOOGLE_MAPS_KEY
         env:
           GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}

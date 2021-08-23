@@ -78,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupAppCenter() {
         AppCenter.start(
-                application, "a6a0acef-1c4f-4f58-8bd7-c013108ea4b3", Analytics::class.java, Crashes::class.java
+                application, BuildConfig.APP_CENTER_SECRET, Analytics::class.java, Crashes::class.java
         )
     }
 
