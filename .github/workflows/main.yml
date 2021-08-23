@@ -30,8 +30,6 @@ jobs:
           APP_CENTER_SECRET: ${{ secrets.APP_CENTER_SECRET }}
         run: echo APP_CENTER_SECRET=\"APP_CENTER_SECRET\" > ./local.properties
 
-
-
       - name: Access GOOGLE_MAPS_KEY
         env:
           GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
