@@ -66,7 +66,7 @@ String getApiKey() {
 
     properties.load(new FileInputStream(propFile))
 
-    return properties[OPEN_WEATHER_KEY]
+    return properties['OPEN_WEATHER_KEY']
 }
 
 String getAppCenterKey() {
@@ -75,7 +75,7 @@ String getAppCenterKey() {
 
     properties.load(new FileInputStream(propFile))
 
-    return properties[APP_CENTER_SECRET]
+    return properties['APP_CENTER_SECRET']
 }
 
 dependencies {
