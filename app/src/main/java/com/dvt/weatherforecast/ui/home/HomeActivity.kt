@@ -72,16 +72,8 @@ class HomeActivity : AppCompatActivity() {
         initViews()
         getItemsFromDb()
         observeViewModel()
-        setupAppCenter()
 
     }
-
-    private fun setupAppCenter() {
-        AppCenter.start(
-                application, BuildConfig.APP_CENTER_SECRET, Analytics::class.java, Crashes::class.java
-        )
-    }
-
 
     private fun initViews() {
         binding.fabCities.setOnClickListener {

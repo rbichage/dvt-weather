@@ -27,7 +27,7 @@ jobs:
 
       - name: Access APP_CENTER_VALUE
         env:
-          APP_CENTER_VALUE: ${{ secrets.APP_CENTER_SECRET }}
+          APP_CENTER_VALUE: ${{ secrets.APP_CENTER_VALUE }}
         run: echo APP_CENTER_VALUE=\"APP_CENTER_VALUE\" > ./local.properties
 
       - name: Access GOOGLE_MAPS_KEY

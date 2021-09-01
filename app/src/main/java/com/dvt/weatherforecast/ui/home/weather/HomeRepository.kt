@@ -1,12 +1,12 @@
 package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Location
-import com.dvt.weatherforecast.BuildConfig
 import com.dvt.weatherforecast.data.base.BaseRepository
 import com.dvt.weatherforecast.data.models.db.ForeCastEntity
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.db.ForeCastDao
 import com.dvt.weatherforecast.db.LocationDao
+import com.dvt.weatherforecast.di.NetworkModule
 import com.dvt.weatherforecast.network.ApiService
 import javax.inject.Inject
 
@@ -14,13 +14,14 @@ class HomeRepository @Inject constructor(
         private val apiService: ApiService,
         private val foreCastDao: ForeCastDao,
         val locationDao: LocationDao,
+        @NetworkModule.WeatherApiKey val apiKey: String
 ) : BaseRepository() {
 
     suspend fun getByLocation(location: Location) = apiCall {
         apiService.getCurrentByLocation(
                 location.latitude.toString(),
                 location.longitude.toString(),
-                BuildConfig.OPEN_WEATHER_KEY
+                apiKey
         )
     }
 
@@ -28,7 +29,7 @@ class HomeRepository @Inject constructor(
         apiService.getForecastByLocation(
                 location.latitude.toString(),
                 location.longitude.toString(),
-                BuildConfig.OPEN_WEATHER_KEY
+                apiKey
         )
     }
 

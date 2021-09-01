@@ -25,7 +25,6 @@ android {
 
 //        buildConfigField("String", "APP_CENTER_VALUE", getAppCenterKey())
         buildConfigField("String", "OPEN_WEATHER_KEY", getApiKey())
-        buildConfigField("String", "GOOGLE_MAPS_KEY", getMapsApiKey())
     }
 
 
@@ -79,14 +78,6 @@ String getAppCenterKey() {
     return properties['APP_CENTER_VALUE']
 }
 
-String getMapsApiKey() {
-    def propFile = rootProject.file("./local.properties")
-    def properties = new Properties()
-
-    properties.load(new FileInputStream(propFile))
-
-    return properties['GOOGLE_MAPS_KEY']
-}
 
 dependencies {
 
