@@ -30,7 +30,7 @@ open class WeatherRequestDispatcher : Dispatcher() {
     }
 
 
-    fun getJson(path: String): String {
+    private fun getJson(path: String): String {
 
         val uri = getResource(path)
         val file = File(uri.path)
