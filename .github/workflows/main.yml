@@ -39,8 +39,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run detekt
-        run: ./gradlew detekt --stacktrace
+      #      - name: Run detekt
+      #        run: ./gradlew detekt --stacktrace
 
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
