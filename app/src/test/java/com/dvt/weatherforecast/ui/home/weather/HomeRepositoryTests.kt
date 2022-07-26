@@ -6,8 +6,9 @@ import com.dvt.weatherforecast.data.sample.SamplePayLoads
 import com.dvt.weatherforecast.data.sample.SampleResponses
 import com.dvt.weatherforecast.utils.network.ApiResponse
 import com.google.common.truth.Truth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert
 import org.junit.Before
@@ -26,6 +27,7 @@ class HomeRepositoryTests : BaseTest() {
 
 
     @Before
+    @ExperimentalCoroutinesApi
     override fun setup() {
         super.setup()
         homeRepository = HomeRepository(apiService, "random string", foreCastDao, locationDao)
@@ -33,27 +35,29 @@ class HomeRepositoryTests : BaseTest() {
 
 
     @Test
+    @ExperimentalCoroutinesApi
     fun `test getting current weather from API`() {
-        runBlocking {
-
-            val response = homeRepository.getByLocation(location = SampleResponses.testLocation)
+        runTest {
+            val response = homeRepository.getCurrentWeatherByLocation(location = SampleResponses.testLocation)
 
             Truth.assertThat(response is ApiResponse.Success)
         }
     }
 
     @Test
+    @ExperimentalCoroutinesApi
     fun `test getting forecast from API`() {
-        runBlocking {
-            val response = homeRepository.getForeCastByLocation(location = SampleResponses.testLocation)
+        runTest {
+            val response = homeRepository.getNextForeCastByLocation(location = SampleResponses.testLocation)
 
             Truth.assertThat(response is ApiResponse.Success)
         }
     }
 
     @Test
+    @ExperimentalCoroutinesApi
     fun `test inserting weather DB`() {
-        runBlocking {
+        runTest{
             homeRepository.insertCurrentLocation(SamplePayLoads.sampleLocation)
 
             val location = homeRepository.getAllLocations().first().toList()[0]

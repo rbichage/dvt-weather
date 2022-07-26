@@ -1,7 +1,16 @@
 package com.dvt.weatherforecast.data.sample
 
 import android.location.Location
-import com.dvt.weatherforecast.data.models.*
+import com.dvt.weatherforecast.data.models.Clouds
+import com.dvt.weatherforecast.data.models.Coord
+import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
+import com.dvt.weatherforecast.data.models.Daily
+import com.dvt.weatherforecast.data.models.FeelsLike
+import com.dvt.weatherforecast.data.models.Main
+import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
+import com.dvt.weatherforecast.data.models.Temp
+import com.dvt.weatherforecast.data.models.Weather
+import com.dvt.weatherforecast.data.models.Wind
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 
 
@@ -25,7 +34,7 @@ object SampleResponses {
             )
     )
 
-    val testLocation = Location("this").apply {
+    val testLocation = Location(javaClass.name).apply {
         latitude = -1.2907344085176307
         longitude = 36.82093485505406
     }
@@ -51,19 +60,23 @@ object SampleResponses {
     val fakeLocations = listOf(
             LocationEntity(
                     "Nairobi",
-                    -1.2907344085176307, 36.82093485505406,
+                    "-1.2907344085176307, 36.82093485505406",
+                    -1.2907344085176307,
+                    36.82093485505406,
                     20,
                     25,
                     20,
                     System.currentTimeMillis(),
                     true,
                     "800",
-                    "Clear"
+                    "Clear",
 
             ),
             LocationEntity(
                     "Mombasa",
-                    -1.2907344085176307, 36.82093485505406,
+                    "-1.2907344085176307, 36.82093485505406",
+                    -1.2907344085176307,
+                    36.82093485505406,
                     20,
                     25,
                     20,
@@ -76,6 +89,7 @@ object SampleResponses {
 
             LocationEntity(
                     "Athi River",
+                    "-1.2907344085176307, 36.82093485505406",
                     -1.2907344085176307, 36.82093485505406,
                     20,
                     25,
@@ -89,6 +103,7 @@ object SampleResponses {
 
             LocationEntity(
                     "New York",
+                    "-1.2907344085176307, 36.82093485505406",
                     -1.2907344085176307, 36.82093485505406,
                     20, 25, 20,
                     System.currentTimeMillis(),
@@ -98,6 +113,7 @@ object SampleResponses {
 
             LocationEntity(
                     "Makueni",
+                    "-1.2907344085176307, 36.82093485505406",
                     -1.2907344085176307, 36.82093485505406,
                     20, 25, 20,
                     System.currentTimeMillis(),

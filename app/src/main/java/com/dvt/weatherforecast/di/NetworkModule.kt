@@ -34,7 +34,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(@WeatherApiKey apiKey: String): OkHttpClient {
+    fun provideHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -43,7 +43,7 @@ object NetworkModule {
                 .addInterceptor { chain ->
                     val request = chain.request()
                     val authRequest = request.newBuilder()
-                            .header("Content-Type", "application/json")
+                            .header("Addresses-Type", "application/json")
                             .build()
 
 

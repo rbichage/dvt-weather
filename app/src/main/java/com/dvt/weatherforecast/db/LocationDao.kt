@@ -1,6 +1,11 @@
 package com.dvt.weatherforecast.db
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -25,6 +30,9 @@ interface LocationDao {
 
     @Query("SELECT * FROM locations WHERE isCurrent =:isCurrent")
     fun getCurrentLocation(isCurrent: Int = 1): Flow<List<LocationEntity>>
+
+    @Query("SELECT * FROM locations WHERE lat =:latitude")
+    fun getLocationByLatitude(latitude: Double): List<LocationEntity>
 
     @Update
     fun updateLocation(locationEntity: LocationEntity)

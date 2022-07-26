@@ -8,18 +8,23 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.palette.graphics.Palette
 import com.dvt.weatherforecast.R
 import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.db.LocationEntity
-import com.dvt.weatherforecast.databinding.ActivityHomeBinding
+import com.dvt.weatherforecast.databinding.FragmentHomeBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 
 fun View.visible(isVisible: Boolean) {
     visibility = if (isVisible) View.VISIBLE else View.GONE
@@ -45,7 +50,7 @@ fun View.disable() {
     isEnabled = false
 }
 
-fun Context.toast(message: String, length: Int) {
+fun Context.toast(message: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
 }
 
@@ -149,7 +154,7 @@ internal inline fun <reified T> Activity.navigateTo(
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
 
-fun ActivityHomeBinding.updateBackgrounds(
+fun FragmentHomeBinding.updateBackgrounds(
         thisColor: Int,
         drawable: Drawable,
         @DrawableRes drawableId: Int
@@ -164,12 +169,38 @@ fun ActivityHomeBinding.updateBackgrounds(
 
 }
 
-fun Context.getBitMap(@DrawableRes resource: Int) = BitmapFactory.decodeResource(
+fun Context.getBitMap(@DrawableRes resource: Int): Bitmap = BitmapFactory.decodeResource(
         resources, resource
 )
 
+fun Activity.updateStatusBarColor(bitMap: Bitmap) {
 
-fun ActivityHomeBinding.changeBackground(locationEntity: LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap {
+    Palette.Builder(bitMap)
+            .generate { result ->
+
+                result?.let {
+                    val dominantSwatch = it.dominantSwatch
+
+                    Timber.e("dominant color is ${dominantSwatch?.rgb}")
+
+                    if (dominantSwatch != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val window: Window = window
+                            window.statusBarColor = dominantSwatch.rgb
+
+                        } else {
+                            val window: Window = window
+                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                            window.statusBarColor = dominantSwatch.rgb
+                        }
+                    }
+                }
+            }
+}
+
+
+fun FragmentHomeBinding.changeBackground(locationEntity: LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap {
     val id = locationEntity?.weatherCondition ?: weatherResponse!!.weather[0].id.toString()
     val context = root.context
 
@@ -253,11 +284,11 @@ fun Context.showErrorDialog(message: String, positiveText: String, negativeText:
             .setTitle("Request Failed")
             .setMessage(message)
             .setCancelable(false)
-            .setPositiveButton(positiveText) { dialog, which ->
+            .setPositiveButton(positiveText) { dialog, _ ->
                 dialog.dismiss()
                 positiveAction?.invoke(this)
             }
-            .setNegativeButton(negativeText) { dialog, which ->
+            .setNegativeButton(negativeText) { dialog, _ ->
                 dialog.dismiss()
                 negativeAction?.invoke(this)
             }

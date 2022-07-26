@@ -17,7 +17,7 @@ class HomeRepository @Inject constructor(
         val locationDao: LocationDao,
 ) : BaseRepository() {
 
-    suspend fun getByLocation(location: Location) = apiCall {
+    suspend fun getCurrentWeatherByLocation(location: Location) = apiCall {
         apiService.getCurrentByLocation(
                 location.latitude.toString(),
                 location.longitude.toString(),
@@ -25,7 +25,7 @@ class HomeRepository @Inject constructor(
         )
     }
 
-    suspend fun getForeCastByLocation(location: Location) = apiCall {
+    suspend fun getNextForeCastByLocation(location: Location) = apiCall {
         apiService.getForecastByLocation(
                 location.latitude.toString(),
                 location.longitude.toString(),
@@ -41,11 +41,14 @@ class HomeRepository @Inject constructor(
 
     fun getAllLocations() = locationDao.getAllLocation()
 
+
     suspend fun deleteCurrentLocation() = locationDao.deleteCurrentLocation(1)
 
     fun getAllForeCasts() = foreCastDao.getAllForeCasts()
 
     fun getCurrentLocation() = locationDao.getCurrentLocation()
+
+    fun getLocationByLatitude(lat: Double) = locationDao.getLocationByLatitude(lat)
 
     suspend fun deleteLocation(locationEntity: LocationEntity) = locationDao.deleteLocation(locationEntity)
 

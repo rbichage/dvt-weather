@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dvt.weatherforecast.ui.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/toSavedLocations"
+            app:destination="@id/savedLocationsFragment"
+            app:launchSingleTop="true"/>
+        <argument
+            android:name="locationEntity"
+            android:defaultValue="@null"
+            app:argType="com.dvt.weatherforecast.data.models.db.LocationEntity"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedLocationsFragment"
+        android:name="com.dvt.weatherforecast.ui.saved_locations.SavedLocationsFragment"
+        android:label="SavedLocationsFragment"
+        tools:layout="@layout/fragment_saved_locations">
+        <action
+            android:id="@+id/toHomeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/savedLocationsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

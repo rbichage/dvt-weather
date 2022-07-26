@@ -10,7 +10,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LocationEntity(
         @ColumnInfo(name = "locationName") val name: String,
-        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "lat") val lat: Double,
+        @PrimaryKey(autoGenerate = false)
+        @ColumnInfo(name = "locationId") val locationId: String,
+        @ColumnInfo(name = "lat") val lat: Double,
         @ColumnInfo(name = "lng") val lng: Double,
         @ColumnInfo(name = "normalTemp") val normalTemp: Int,
         @ColumnInfo(name = "highTemp") val highTemp: Int,

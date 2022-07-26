@@ -4,16 +4,18 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.dvt.weatherforecast.db.ForeCastDao
-import com.dvt.weatherforecast.db.ForeCastDatabase
 import com.dvt.weatherforecast.db.LocationDao
-import com.dvt.weatherforecast.db.LocationDatabase
+import com.dvt.weatherforecast.db.WeatherDatabase
 import com.dvt.weatherforecast.dispatcher.WeatherRequestDispatcher
 import com.dvt.weatherforecast.network.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockWebServer
@@ -26,7 +28,7 @@ import java.util.concurrent.TimeUnit
 
 open class BaseTest {
     // database and dao
-    open lateinit var locationDatabase: LocationDatabase
+    open lateinit var weatherDatabase: WeatherDatabase
     open lateinit var locationDao: LocationDao
 
     // mock web server and network api
@@ -34,35 +36,30 @@ open class BaseTest {
     open lateinit var okHttpClient: OkHttpClient
     open lateinit var loggingInterceptor: HttpLoggingInterceptor
     open lateinit var apiService: ApiService
-    open lateinit var foreCastDatabase: ForeCastDatabase
     open lateinit var foreCastDao: ForeCastDao
 
+    @ExperimentalCoroutinesApi
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
+    @ExperimentalCoroutinesApi
     open fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        val testDispatcher = TestCoroutineDispatcher()
-        val testScope = TestCoroutineScope(testDispatcher)
+        Dispatchers.setMain(testDispatcher)
 
-        locationDatabase = Room.inMemoryDatabaseBuilder(context,
-                LocationDatabase::class.java)
+        weatherDatabase = Room.inMemoryDatabaseBuilder(context,
+                WeatherDatabase::class.java)
                 .allowMainThreadQueries()
                 .setTransactionExecutor(testDispatcher.asExecutor())
                 .setQueryExecutor(testDispatcher.asExecutor())
                 .build()
 
-        foreCastDatabase = Room.inMemoryDatabaseBuilder(
-                context,
-                ForeCastDatabase::class.java)
-                .allowMainThreadQueries()
-                .setTransactionExecutor(testDispatcher.asExecutor())
-                .setQueryExecutor(testDispatcher.asExecutor())
-                .build()
 
-        foreCastDao = foreCastDatabase.foreCastDao()
 
-        locationDao = locationDatabase.locationDao()
+        foreCastDao = weatherDatabase.foreCastDao()
+
+        locationDao = weatherDatabase.locationDao()
 
         mockWebServer = MockWebServer().apply {
             dispatcher = WeatherRequestDispatcher()
@@ -90,8 +87,10 @@ open class BaseTest {
 
     @After
     @Throws(IOException::class)
+    @ExperimentalCoroutinesApi
     open fun tearDown() {
-        locationDatabase.close()
+        Dispatchers.resetMain()
+        weatherDatabase.close()
         mockWebServer.shutdown()
     }
 

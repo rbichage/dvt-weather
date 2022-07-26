@@ -1,7 +1,7 @@
 package com.dvt.weatherforecast.ui.home.weather
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.location.Geocoder
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dvt.weatherforecast.data.sample.SampleResponses.fakeForeCasts
 import com.dvt.weatherforecast.data.sample.SampleResponses.fakeWeatherResponse
@@ -9,12 +9,12 @@ import com.dvt.weatherforecast.data.sample.SampleResponses.testLocation
 import com.dvt.weatherforecast.utils.location.GetLocation
 import com.dvt.weatherforecast.utils.network.ApiResponse
 import com.dvt.weatherforecast.utils.observeOnce
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,16 +51,17 @@ class HomeViewModelTests {
     @Test
     fun `test get current weather successfully`() {
 
-        runBlockingTest {
+        runTest {
 
             coEvery {
-                homeRepository.getByLocation(testLocation)
+                homeRepository.getCurrentWeatherByLocation(testLocation)
             } returns ApiResponse.Success(fakeWeatherResponse)
 
 
-            homeViewModel.getDataFromLocation(testLocation).observeOnce {
-                assertThat(it).isInstanceOf(ApiResponse.Success::class.java)
+            homeViewModel.getCurrentWeather(testLocation, false)
 
+            homeViewModel.uiState.observeOnce { uiState ->
+                assertThat(uiState, `is`(HomeUiState.Loading))
             }
 
         }
@@ -69,15 +70,16 @@ class HomeViewModelTests {
     @ExperimentalCoroutinesApi
     @Test
     fun `test get forecast successfully`() {
-        runBlockingTest {
+        runTest {
             coEvery {
-                homeRepository.getForeCastByLocation(testLocation)
+                homeRepository.getNextForeCastByLocation(testLocation)
             } returns ApiResponse.Success(fakeForeCasts)
 
             homeViewModel.getForeCastFromLocation(testLocation)
-                    .collect { response ->
-                        assertThat(response).isInstanceOf(ApiResponse::class.java)
-                    }
+
+            homeViewModel.uiState.observeOnce { uiState ->
+                assertThat(uiState, `is`(HomeUiState.Loading))
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.dvt.weatherforecast.ui.cities
+package com.dvt.weatherforecast.ui.saved_locations
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

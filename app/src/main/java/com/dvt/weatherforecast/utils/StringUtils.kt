@@ -23,8 +23,7 @@ object StringUtils {
 
         return initial.toString()
     }
-
-
 }
+
 
 

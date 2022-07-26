@@ -2,8 +2,7 @@ package com.dvt.weatherforecast.di
 
 import android.content.Context
 import androidx.room.Room
-import com.dvt.weatherforecast.db.ForeCastDatabase
-import com.dvt.weatherforecast.db.LocationDatabase
+import com.dvt.weatherforecast.db.WeatherDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,27 +18,17 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideCitiesDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
-        context.applicationContext,
-        LocationDatabase::class.java,
-        "cities.db"
+            context.applicationContext,
+            WeatherDatabase::class.java,
+            "cities.db"
     ).fallbackToDestructiveMigration()
-        .build()
+            .build()
 
 
     @Provides
-    @Singleton
-    fun provideForeCastDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
-        context.applicationContext,
-        ForeCastDatabase::class.java,
-        "forecast.db"
-    ).fallbackToDestructiveMigration()
-        .build()
-
+    fun provideCitiesDao(weatherDatabase: WeatherDatabase) = weatherDatabase.locationDao()
 
     @Provides
-    fun provideCitiesDao(citesDatabase: LocationDatabase) = citesDatabase.locationDao()
-
-    @Provides
-    fun provideForeCastDao(foreCastDatabase: ForeCastDatabase) = foreCastDatabase.foreCastDao()
+    fun provideForeCastDao(weatherDatabase: WeatherDatabase) = weatherDatabase.foreCastDao()
 
 }

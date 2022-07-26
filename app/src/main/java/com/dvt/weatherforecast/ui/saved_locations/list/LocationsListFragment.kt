@@ -1,7 +1,5 @@
-package com.dvt.weatherforecast.ui.cities
+package com.dvt.weatherforecast.ui.saved_locations.list
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.dvt.weatherforecast.databinding.FragmentCitiesListBinding
-import com.dvt.weatherforecast.ui.home.HomeActivity
-import com.dvt.weatherforecast.ui.search.SearchActivity
-import com.dvt.weatherforecast.utils.view.navigateTo
-import com.dvt.weatherforecast.utils.view.showErrorSnackbar
+import com.dvt.weatherforecast.ui.saved_locations.LocationsAdapter
+import com.dvt.weatherforecast.ui.saved_locations.LocationsViewModel
+import com.dvt.weatherforecast.utils.view.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -45,32 +41,22 @@ class LocationsListFragment : Fragment() {
 
         locationsAdapter = LocationsAdapter(
                 onLocationSelected = { locationEntity ->
-                    Intent(binding.root.context, HomeActivity::class.java).apply {
-                        putExtra("locationEntity", locationEntity)
-                        activity?.setResult(RESULT_OK, this)
-                        activity?.finish()
-                        activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-
-                    }
+                    activity?.toast(locationEntity.name)
                 },
 
                 onLongClick = { locationEntity ->
-                    if (locationEntity.isCurrent) {
-                        binding.root.showErrorSnackbar("You cannot delete current location", Snackbar.LENGTH_LONG)
-                    } else {
+                    MaterialAlertDialogBuilder(binding.root.context)
+                            .setTitle("DELETE")
+                            .setMessage("Do you wish to delete ${locationEntity.name}?")
+                            .setPositiveButton("YES") { dialog, _ ->
+                                viewModel.deleteEntity(locationEntity)
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("CANCEL") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
 
-                        MaterialAlertDialogBuilder(binding.root.context)
-                                .setTitle("DELETE")
-                                .setMessage("Do you wish to delete ${locationEntity.name}?")
-                                .setPositiveButton("YES") { dialog, _ ->
-                                    viewModel.deleteEntity(locationEntity)
-                                    dialog.dismiss()
-                                }
-                                .setNegativeButton("CANCEL") { dialog, _ ->
-                                    dialog.dismiss()
-                                }
-                                .show()
-                    }
                 }
         )
 
@@ -79,7 +65,9 @@ class LocationsListFragment : Fragment() {
         }
 
         binding.btnAddLocation.setOnClickListener {
-            activity?.navigateTo<SearchActivity>(false) { }
+            LocationsListFragmentDirections.toLocationSearch().also {
+                findNavController().navigate(it)
+            }
         }
     }
 

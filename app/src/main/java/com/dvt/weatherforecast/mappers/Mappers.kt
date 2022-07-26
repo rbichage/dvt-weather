@@ -4,17 +4,13 @@ import com.dvt.weatherforecast.data.models.CurrentWeatherResponse
 import com.dvt.weatherforecast.data.models.OneShotForeCastResponse
 import com.dvt.weatherforecast.data.models.db.ForeCastEntity
 import com.dvt.weatherforecast.data.models.db.LocationEntity
-import com.dvt.weatherforecast.utils.StringUtils.capitalizeWords
 import com.dvt.weatherforecast.utils.convertTimeStamp
-import timber.log.Timber
 
 
 fun CurrentWeatherResponse.toCurrentLocationEntity(locationName: String = ""): LocationEntity {
 
-    Timber.e("location name $locationName")
-
     return LocationEntity(
-            name = if (name.trim().isNotEmpty()) locationName else name,
+            name = if (locationName.trim().isNotEmpty()) locationName else name,
             lat = coord.lat,
             lng = coord.lon,
             normalTemp = this.main.temp.toInt(),
@@ -23,17 +19,15 @@ fun CurrentWeatherResponse.toCurrentLocationEntity(locationName: String = ""): L
             lastUpdated = System.currentTimeMillis(),
             isCurrent = true,
             weatherCondition = weather[0].id.toString(),
-            weatherConditionName = weather[0].description
+            weatherConditionName = weather[0].description,
+            locationId = "${coord.lat}${coord.lon}"
     )
 }
 
-
-fun CurrentWeatherResponse.toNewLocationEntity(locationName: String = ""): LocationEntity {
-
-    Timber.e("location name $locationName")
+fun CurrentWeatherResponse.toNewLocationEntity(locationName: String): LocationEntity {
 
     return LocationEntity(
-            name = if (name.trim().isNotEmpty()) locationName else name,
+            name = locationName,
             lat = coord.lat,
             lng = coord.lon,
             normalTemp = this.main.temp.toInt(),
@@ -42,28 +36,22 @@ fun CurrentWeatherResponse.toNewLocationEntity(locationName: String = ""): Locat
             lastUpdated = System.currentTimeMillis(),
             isCurrent = false,
             weatherCondition = weather[0].id.toString(),
-            weatherConditionName = weather[0].description.capitalizeWords()
+            weatherConditionName = weather[0].description,
+            locationId = "${coord.lat}${coord.lon}"
     )
 }
 
 
-fun OneShotForeCastResponse.toForeCastEntity(name: String): List<ForeCastEntity> {
-    val items: MutableList<ForeCastEntity> = ArrayList()
+fun OneShotForeCastResponse.toForeCastEntity(name: String): List<ForeCastEntity> =
+        daily.map { forecast ->
+            ForeCastEntity(
+                    day = convertTimeStamp(forecast.dt.toLong()),
+                    locationName = name,
+                    lat = lat,
+                    lng = lon,
+                    normalTemp = forecast.temp.day.toInt(),
+                    lastUpdated = forecast.dt.toLong(),
+                    weatherCondition = forecast.weather[0].id.toString()
+            )
+        }
 
-    for (forecast in daily) {
-
-        val foreCastEntity = ForeCastEntity(
-                day = convertTimeStamp(forecast.dt.toLong()),
-                locationName = name,
-                lat = lat,
-                lng = lon,
-                normalTemp = forecast.temp.day.toInt(),
-                lastUpdated = forecast.dt.toLong(),
-                weatherCondition = forecast.weather[0].id.toString()
-        )
-
-        items.add(foreCastEntity)
-    }
-
-    return items
-}

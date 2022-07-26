@@ -13,8 +13,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 abstract class BaseRepository {
+
     suspend fun <T> apiCall(apiCall: suspend () -> T): ApiResponse<T> {
+
+
         return withContext(Dispatchers.IO) {
+
             try {
                 ApiResponse.Success(apiCall.invoke())
             } catch (e: Exception) {
@@ -23,19 +27,19 @@ abstract class BaseRepository {
 
                 when (e) {
                     is IOException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                            ErrorHolder("Unable to connect, check your connection", 1, "")
                     )
 
                     is HttpException -> ApiResponse.Failure(extractHttpExceptions(e))
 
                     is UnknownHostException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                            ErrorHolder("Unable to connect, check your connection", 1, "")
                     )
 
                     is SocketTimeoutException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                            ErrorHolder("Unable to connect, check your connection", 1, "")
                     )
-                    else -> ApiResponse.Failure(ErrorHolder(e.message.toString(), 1, ""))
+                    else -> ApiResponse.Failure(ErrorHolder(e.message.orEmpty(), 1, ""))
                 }
             }
         }
@@ -48,7 +52,7 @@ abstract class BaseRepository {
         Timber.e("json string $jsonString")
 
         val message = try {
-            val jsonObject = JSONObject(jsonString)
+            val jsonObject = JSONObject(jsonString.orEmpty())
             jsonObject.getString("message")
         } catch (exception: JSONException) {
             when (e.code()) {
@@ -66,7 +70,7 @@ abstract class BaseRepository {
             }
         }
 
-        val errorCode = e.response()?.code()
-        return ErrorHolder(message, errorCode, jsonString!!)
+        val errorCode = e.response()?.code() ?: 0
+        return ErrorHolder(message, errorCode, jsonString.orEmpty())
     }
 }

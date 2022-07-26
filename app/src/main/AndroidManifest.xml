@@ -17,20 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherForecast">
 
-        <activity
-            android:name=".ui.search.SearchActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WeatherForecast.Cities"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.cities.LocationsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WeatherForecast.Cities"
-            tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".ui.home.HomeActivity"
-            android:exported="true">
+            android:name=".ui.root.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,11 +30,9 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_MAPS_KEY}" />
-
     </application>
 
 </manifest>

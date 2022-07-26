@@ -1,4 +1,4 @@
-package com.dvt.weatherforecast.ui.cities
+package com.dvt.weatherforecast.ui.saved_locations
 
 import com.dvt.weatherforecast.data.models.db.LocationEntity
 import com.dvt.weatherforecast.db.LocationDao

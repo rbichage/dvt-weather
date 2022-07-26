@@ -1,4 +1,4 @@
-package com.dvt.weatherforecast.ui.cities
+package com.dvt.weatherforecast.ui.saved_locations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

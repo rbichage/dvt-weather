@@ -2,6 +2,7 @@ package com.dvt.weatherforecast
 
 import android.app.Application
 import com.dvt.weatherforecast.utils.storage.UserPreferences
+import com.google.android.libraries.places.api.Places
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -11,6 +12,7 @@ class WeatherForeCast : Application() {
         super.onCreate()
 
         UserPreferences(this)
+        Places.initialize(this, BuildConfig.GOOGLE_MAPS_KEY)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }

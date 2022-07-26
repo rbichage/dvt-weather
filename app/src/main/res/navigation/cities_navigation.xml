@@ -7,22 +7,32 @@
 
     <fragment
         android:id="@+id/locationsListFragment"
-        android:name="com.dvt.weatherforecast.ui.cities.LocationsListFragment"
+        android:name="com.dvt.weatherforecast.ui.saved_locations.list.LocationsListFragment"
         android:label="fragment_cities_list"
         tools:layout="@layout/fragment_cities_list">
         <action
             android:id="@+id/action_citiesListFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/locationsListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/toLocationSearch"
+            app:destination="@id/locationSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.dvt.weatherforecast.ui.cities.MapFragment"
+        android:name="com.dvt.weatherforecast.ui.saved_locations.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_citiesListFragment"
             app:destination="@id/locationsListFragment"
-            app:popUpTo="@id/cities_navigation"
+            app:popUpTo="@id/mapFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <dialog
+        android:id="@+id/locationSearchFragment"
+        android:name="com.dvt.weatherforecast.ui.search.LocationSearchFragment"
+        android:label="LocationSearchFragment"
+        tools:layout="@layout/fragment_search_locations" />
 </navigation>

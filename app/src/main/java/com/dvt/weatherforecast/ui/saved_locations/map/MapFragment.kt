@@ -1,61 +1,39 @@
-package com.dvt.weatherforecast.ui.cities
+package com.dvt.weatherforecast.ui.saved_locations.map
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.dvt.weatherforecast.BuildConfig
 import com.dvt.weatherforecast.R
 import com.dvt.weatherforecast.databinding.FragmentMapBinding
-import com.dvt.weatherforecast.ui.home.HomeActivity
-import com.dvt.weatherforecast.ui.home.weather.HomeViewModel
 import com.dvt.weatherforecast.utils.getLocationIcon
+import com.dvt.weatherforecast.utils.location.goToLocationSettings
 import com.dvt.weatherforecast.utils.location.isLocationEnabled
 import com.dvt.weatherforecast.utils.moveCameraWithAnim
 import com.dvt.weatherforecast.utils.permmissions.isLocationPermissionEnabled
-import com.dvt.weatherforecast.utils.view.showErrorSnackbar
+import com.dvt.weatherforecast.utils.permmissions.requestLocationPermission
+import com.dvt.weatherforecast.utils.view.toast
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private val binding: FragmentMapBinding by lazy {
         FragmentMapBinding.inflate(layoutInflater)
     }
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val viewModel: MapViewModel by viewModels()
 
-    override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View = binding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,12 +45,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun observeViewModel() {
-        homeViewModel.currentLocation.observe(viewLifecycleOwner) { location ->
-            setupMap(location)
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+
+            when (uiState) {
+                is MapUiState.LocationData -> {
+                    setupMap(uiState.location)
+                }
+                is MapUiState.LocationName -> {
+
+                }
+            }
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -84,45 +69,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             uiSettings.isMapToolbarEnabled = false
             uiSettings.isMyLocationButtonEnabled = false
             isMyLocationEnabled = true
-            setMapStyle(MapStyleOptions.loadRawResourceStyle(binding.root.context, R.raw.maps_style))
+//            setMapStyle(MapStyleOptions.loadRawResourceStyle(binding.root.context, R.raw.maps_style))
 
         }
 
-    }
-
-    private fun requestLocationPermission() {
-        val permissions = listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        activity?.let {
-            Dexter.withContext(it.applicationContext)
-                    .withPermissions(permissions)
-                    .withListener(object : MultiplePermissionsListener {
-                        override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                            report?.let { result ->
-                                if (result.areAllPermissionsGranted()) {
-                                    Timber.d("permissions allowed")
-                                    getCurrentLocation()
-                                } else {
-                                    binding.root.showErrorSnackbar(
-                                            "Permissions denied",
-                                            Snackbar.LENGTH_LONG
-                                    )
-                                }
-                            }
-                        }
-
-                        override fun onPermissionRationaleShouldBeShown(
-                                p0: MutableList<PermissionRequest>?,
-                                p1: PermissionToken?
-                        ) {
-                            Toast.makeText(it, "enable location", Toast.LENGTH_SHORT).show()
-                        }
-
-                    }).check()
-        }
     }
 
 
@@ -131,7 +81,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCameraWithAnim(latLng)
 
         lifecycleScope.launchWhenStarted {
-            homeViewModel.getAllLocations().collect { locations ->
+            viewModel.getAllLocations().collect { locations ->
 
                 if (locations.isNotEmpty()) {
 
@@ -161,12 +111,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                         setMessage("View weather details for ${selectedLocation.name}?")
                                         setPositiveButton("YES") { dialog, _ ->
                                             dialog.dismiss()
-                                            Intent(binding.root.context, HomeActivity::class.java).apply {
-                                                putExtra("locationEntity", selectedLocation)
-                                                activity?.setResult(Activity.RESULT_OK, this)
-                                                activity?.finish()
-                                            }
-
                                         }
                                         setNegativeButton("Cancel") { dialog, _ ->
                                             dialog.dismiss()
@@ -193,34 +137,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (binding.root.context.isLocationEnabled()) {
                 getCurrentLocation()
             } else {
-                askForLocation()
+                activity?.goToLocationSettings()
             }
         } else {
-            requestLocationPermission()
-        }
-    }
-
-    private fun askForLocation() {
-        MaterialAlertDialogBuilder(binding.root.context).apply {
-            setMessage("Enable location to continue")
-            setPositiveButton("ENABLE") { dialog, _ ->
-                val packageName = BuildConfig.APPLICATION_ID
-                dialog.dismiss()
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.parse("package:$packageName")
-                    startActivity(this)
-                }
-            }
-            setNegativeButton("CANCEL") { dialog, _ ->
-                dialog.dismiss()
-                activity?.onBackPressed()
-            }
-            show()
+            activity?.requestLocationPermission(
+                    onPermissionAccepted = {
+                        getCurrentLocation()
+                    },
+                    onPermissionDenied = {
+                        activity?.toast("Permission denied")
+                    },
+                    shouldShowRationale = {
+                        activity?.toast("Accept permissions LOL")
+                    }
+            )
         }
     }
 
     private fun getCurrentLocation() {
-        homeViewModel.getCurrentLocation()
+        viewModel.getCurrentLocation()
     }
 
 }

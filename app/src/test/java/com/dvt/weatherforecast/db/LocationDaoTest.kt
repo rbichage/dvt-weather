@@ -1,12 +1,12 @@
 package com.dvt.weatherforecast.db
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dvt.weatherforecast.BaseTest
 import com.dvt.weatherforecast.data.sample.SamplePayLoads
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
@@ -25,7 +25,7 @@ class LocationDaoTest : BaseTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `test insert and retrieve location`() = runBlockingTest {
+    fun `test insert and retrieve location`() = runTest {
         locationDao.insertLocation(locationEntity = SamplePayLoads.sampleLocation)
 
         val location = locationDao.getAllLocation().first().toList()[0]
