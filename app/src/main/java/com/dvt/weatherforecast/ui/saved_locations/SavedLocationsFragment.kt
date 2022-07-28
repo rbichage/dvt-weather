@@ -22,7 +22,7 @@ class SavedLocationsFragment : Fragment(R.layout.fragment_saved_locations) {
 
     private lateinit var navController: NavController
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
 
@@ -66,6 +66,7 @@ class SavedLocationsFragment : Fragment(R.layout.fragment_saved_locations) {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+                Timber.e("$tab unselected")
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
