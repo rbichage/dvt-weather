@@ -2,19 +2,18 @@ package com.dvt.weatherforecast.ui.home.weather
 
 import android.location.Geocoder
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dvt.weatherforecast.data.sample.SampleResponses.fakeForeCasts
 import com.dvt.weatherforecast.data.sample.SampleResponses.fakeWeatherResponse
 import com.dvt.weatherforecast.data.sample.SampleResponses.testLocation
 import com.dvt.weatherforecast.utils.location.GetLocation
 import com.dvt.weatherforecast.utils.network.ApiResponse
-import com.dvt.weatherforecast.utils.observeOnce
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,9 +41,12 @@ class HomeViewModelTests {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    private val observer: Observer<HomeUiState> = mockk(relaxed = true)
+
     @Before
     fun setup() {
         homeViewModel = HomeViewModel(getLocation, geoCoder, homeRepository)
+        homeViewModel.uiState.observeForever(observer)
     }
 
     @ExperimentalCoroutinesApi
@@ -60,10 +62,11 @@ class HomeViewModelTests {
 
             homeViewModel.getCurrentWeather(testLocation, false)
 
-            homeViewModel.uiState.observeOnce { uiState ->
-                assertThat(uiState, `is`(HomeUiState.Loading))
-            }
+            verifyOrder {
+                observer.onChanged(HomeUiState.Loading)
+                observer.onChanged(HomeUiState.CurrentWeather(fakeWeatherResponse))
 
+            }
         }
     }
 
@@ -77,9 +80,11 @@ class HomeViewModelTests {
 
             homeViewModel.getForeCastFromLocation(testLocation)
 
-            homeViewModel.uiState.observeOnce { uiState ->
-                assertThat(uiState, `is`(HomeUiState.Loading))
+            verifyOrder {
+                observer.onChanged(HomeUiState.Loading)
+                observer.onChanged(HomeUiState.ForecastData(fakeForeCasts))
             }
+
         }
     }
 
