@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @Config(
@@ -30,7 +31,7 @@ class HomeRepositoryTests : BaseTest() {
     @ExperimentalCoroutinesApi
     override fun setup() {
         super.setup()
-        homeRepository = HomeRepository(apiService, "random string", foreCastDao, locationDao)
+        homeRepository = HomeRepository(apiService, UUID.randomUUID().toString(), foreCastDao, locationDao)
     }
 
 
@@ -57,7 +58,7 @@ class HomeRepositoryTests : BaseTest() {
     @Test
     @ExperimentalCoroutinesApi
     fun `test inserting weather DB`() {
-        runTest{
+        runTest {
             homeRepository.insertCurrentLocation(SamplePayLoads.sampleLocation)
 
             val location = homeRepository.getAllLocations().first().toList()[0]

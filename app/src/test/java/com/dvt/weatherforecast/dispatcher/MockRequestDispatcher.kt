@@ -11,13 +11,15 @@ import java.net.HttpURLConnection
 open class WeatherRequestDispatcher : Dispatcher() {
     override fun dispatch(request: RecordedRequest): MockResponse {
 
+        val path = request.path.orEmpty()
+
         return when {
-            request.path!!.contains("weather", true) -> {
+            path.contains("weather", true) -> {
                 MockResponse()
                         .setResponseCode(HttpURLConnection.HTTP_OK)
                         .setBody(getJson("json/weatherresponse.json"))
             }
-            request.path!!.contains("onecall", true) -> {
+            path.contains("onecall", true) -> {
                 MockResponse()
                         .setResponseCode(HttpURLConnection.HTTP_OK)
                         .setBody(getJson("json/forecast.json"))
@@ -30,7 +32,7 @@ open class WeatherRequestDispatcher : Dispatcher() {
     }
 
 
-    fun getJson(path: String): String {
+    private fun getJson(path: String): String {
 
         val uri = getResource(path)
         val file = File(uri.path)

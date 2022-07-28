@@ -65,7 +65,6 @@ class HomeViewModelTests {
             verifyOrder {
                 observer.onChanged(HomeUiState.Loading)
                 observer.onChanged(HomeUiState.CurrentWeather(fakeWeatherResponse))
-
             }
         }
     }

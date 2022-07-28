@@ -1,5 +1,6 @@
 package com.dvt.weatherforecast.ui.home
 
+import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -179,6 +180,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateViews(response: CurrentWeatherResponse) {
         val bitMap = binding.changeBackground(null, response)
         activity?.updateStatusBarColor(bitMap)
@@ -197,25 +199,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
 
-    private fun checkForLocation(location: Location, locationEntity: LocationEntity) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.getAllLocations().collect { entities ->
-                if (entities.isNotEmpty()) {
-                    val filter = entities.filter { it.name == locationEntity.name }
-
-                    if (filter.isNotEmpty()) {
-                        val current = filter.first()
-                        val bitmap = binding.changeBackground(current, null)
-                        activity?.updateStatusBarColor(bitmap)
-                        updateViewsFromDb(current, entities)
-
-                    }
-                }
-            }
-        }
-    }
-
-
+    @SuppressLint("SetTextI18n")
     private fun updateViewsFromDb(current: LocationEntity, entities: List<LocationEntity>) {
         val withoutCurrent = entities.map { it.name }.toMutableList()
 
@@ -258,13 +242,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     longitude = entity.lng
                 }
 
-                getCurrentWeather(location, shouldGeoCode = false, tvLocationName.text.toString().trim())
+                getCurrentWeather(location, shouldGeoCode = false)
             }
 
         }
     }
 
-    private fun getCurrentWeather(location: Location, shouldGeoCode: Boolean, locationName: String = "") {
+    private fun getCurrentWeather(location: Location, shouldGeoCode: Boolean) {
         homeViewModel.getCurrentWeather(location, shouldGeoCode)
     }
 
