@@ -7,28 +7,22 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.dvt.weatherforecast.ui.home.HomeFragment"
+        android:name="com.reuben.feature_weather.ui.WeatherFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/toSavedLocations"
             app:destination="@id/savedLocationsFragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <argument
             android:name="locationEntity"
             android:defaultValue="@null"
-            app:argType="com.dvt.weatherforecast.data.models.db.LocationEntity"
+            app:argType="com.reuben.core_data.models.LocationEntity"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/savedLocationsFragment"
-        android:name="com.dvt.weatherforecast.ui.saved_locations.SavedLocationsFragment"
+        android:name="com.reuben.feature_locations.SavedLocationsFragment"
         android:label="SavedLocationsFragment"
-        tools:layout="@layout/fragment_saved_locations">
-        <action
-            android:id="@+id/toHomeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/savedLocationsFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_saved_locations"/>
 </navigation>

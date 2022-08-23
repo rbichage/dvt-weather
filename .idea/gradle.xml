@@ -12,6 +12,17 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/core_common" />
+            <option value="$PROJECT_DIR$/core_data" />
+            <option value="$PROJECT_DIR$/core_database" />
+            <option value="$PROJECT_DIR$/core_di" />
+            <option value="$PROJECT_DIR$/core_navigation" />
+            <option value="$PROJECT_DIR$/core_network" />
+            <option value="$PROJECT_DIR$/core_testing" />
+            <option value="$PROJECT_DIR$/core_ui" />
+            <option value="$PROJECT_DIR$/feature_locations" />
+            <option value="$PROJECT_DIR$/feature_search" />
+            <option value="$PROJECT_DIR$/feature_weather" />
           </set>
         </option>
       </GradleProjectSettings>

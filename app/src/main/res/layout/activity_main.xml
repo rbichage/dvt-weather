@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_root"
-    tools:context=".ui.root.MainActivity">
+    tools:context="com.reuben.weatherforecast.ui.root.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_nav_host_fragment"

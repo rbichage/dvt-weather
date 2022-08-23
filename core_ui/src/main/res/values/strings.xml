@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Weather Forecast</string>
+    <string name="min">Min</string>
+    <string name="current">Current</string>
+    <string name="max">Max</string>
+    <string name="current_location">Current location</string>
+    <string name="map">Map</string>
+    <string name="cities">List</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="api_key"></string>
+    <string name="search_location">search location</string>
+    <string name="symbol_degrees_celsius">℃</string>
+
+</resources>

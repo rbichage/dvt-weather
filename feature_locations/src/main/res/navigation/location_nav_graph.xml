@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cities_navigation"
+    app:startDestination="@id/locationsListFragment">
+
+    <fragment
+        android:id="@+id/locationsListFragment"
+        android:name="com.reuben.feature_locations.ui.list.LocationsListFragment"
+        android:label="fragment_cities_list"
+        tools:layout="@layout/fragment_location_list">
+        <action
+            android:id="@+id/action_citiesListFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/locationsListFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.reuben.feature_locations.ui.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_citiesListFragment"
+            app:destination="@id/locationsListFragment"
+            app:popUpTo="@id/mapFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+</navigation>

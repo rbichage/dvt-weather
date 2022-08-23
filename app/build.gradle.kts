@@ -14,8 +14,8 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.dvt.weatherforecast"
-        minSdk = 21
+        applicationId = "com.reuben.weatherforecast"
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -23,8 +23,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    testOptions.unitTests.isReturnDefaultValues = true
-
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+//            isIncludeAndroidResources = true
+        }
+    }
 
     buildTypes {
         val release by getting {
@@ -49,10 +53,19 @@ android {
     }
 
     kotlinOptions.jvmTarget = "1.8"
-
 }
 
 dependencies {
+
+    implementation(project(":core_database"))
+    implementation(project(":core_data"))
+    implementation(project(":core_ui"))
+    implementation(project(":core_navigation"))
+    implementation(project(":feature_weather"))
+    implementation(project(":feature_locations"))
+    implementation(project(":feature_search"))
+    implementation(project(":feature_weather"))
+
 
     testImplementation(libs.testing.junit)
 
@@ -75,7 +88,6 @@ dependencies {
     testImplementation(libs.mockwebserver)
 
     testImplementation(libs.testing.livedata)
-
 
     implementation(libs.bundles.androidx.ui)
 
@@ -102,7 +114,6 @@ dependencies {
 
     implementation(libs.dexter)
 
-
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
 
@@ -115,10 +126,10 @@ detekt {
     baseline = file("${project.rootDir}/detekt-baseline.xml")
 
     reports {
-        html.enabled = true
-        xml.enabled = true
-        txt.enabled = true
-        sarif.enabled = true
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
     }
 
 }
