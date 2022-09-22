@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":core_data"))
     implementation(project(":core_ui"))
     implementation(project(":core_common"))
+    implementation(project(":core_network"))
+    implementation(project(":core_di"))
 
     implementation(libs.bundles.androidx.ui)
 

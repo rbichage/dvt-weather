@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/home_root"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/colorSunny"
     android:fitsSystemWindows="false">
 
 
@@ -15,7 +13,6 @@
         android:id="@+id/weather_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/forest_sunny"
         app:layout_constrainedHeight="true"
         app:layout_constraintHeight_percent=".4"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,7 +23,6 @@
             style="@style/TextAppearance.MaterialComponents.Headline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +35,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            app:boxStrokeColor="@android:color/white"
             app:boxStrokeWidth="1px"
             app:layout_constraintBottom_toTopOf="@+id/tv_temp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +63,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/tv_temp"
             app:layout_constraintStart_toStartOf="@+id/tv_temp"
@@ -80,7 +74,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="@+id/tv_temp"
             app:layout_constraintStart_toStartOf="@+id/tv_temp"
             app:layout_constraintTop_toBottomOf="@+id/tv_weather_desc"
@@ -95,8 +88,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_updated"
             app:layout_constraintStart_toEndOf="@+id/tv_last_updated"
             app:layout_constraintTop_toTopOf="@+id/tv_last_updated"
-            app:srcCompat="@drawable/baseline_refresh_36"
-            app:tint="@android:color/white" />
+            app:srcCompat="@drawable/baseline_refresh_36" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -119,7 +111,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_min_value"
         app:layout_constraintHorizontal_bias="0.5"
@@ -132,7 +123,6 @@
         android:id="@+id/tv_current_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_current_value"
 
@@ -145,7 +135,6 @@
         android:id="@+id/tv_max_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_max_value"
         app:layout_constraintHorizontal_bias="0.5"
@@ -160,7 +149,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:text="@string/min"
-        android:textColor="@android:color/white"
         app:layout_constraintEnd_toStartOf="@+id/tv_current_value"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -172,8 +160,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/current"
-        android:textColor="@android:color/white"
-
         app:layout_constraintEnd_toStartOf="@+id/tv_max_value"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_min_value"
@@ -185,7 +171,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/max"
-        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_current_value"
@@ -196,7 +181,6 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_min_value" />
@@ -211,19 +195,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_min_value"
         tools:itemCount="5"
         tools:listitem="@layout/layout_forecast_item" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_cities"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/outline_star_outline_24"
-        app:backgroundTint="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/colorPrimary"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

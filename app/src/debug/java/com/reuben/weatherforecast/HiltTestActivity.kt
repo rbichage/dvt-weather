@@ -1,4 +1,4 @@
-package com.dvt.weatherforecast
+package com.reuben.weatherforecast
 
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint

@@ -11,9 +11,9 @@ import com.reuben.core_data.models.db.LocationEntity
 import com.reuben.core_data.models.weather.CurrentWeatherResponse
 import com.reuben.core_ui.getBitMap
 import com.reuben.feature_weather.R
-import com.reuben.feature_weather.databinding.FragmentHomeBinding
+import com.reuben.feature_weather.databinding.FragmentWeatherBinding
 
-fun FragmentHomeBinding.updateBackgrounds(
+fun FragmentWeatherBinding.updateBackgrounds(
         thisColor: Int,
         drawable: Drawable,
         @DrawableRes drawableId: Int
@@ -47,7 +47,7 @@ fun Activity.updateStatusBarColor(bitMap: Bitmap) {
 }
 
 
-fun FragmentHomeBinding.changeBackground(locationEntity: LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap {
+fun FragmentWeatherBinding.changeBackground(locationEntity: LocationEntity? = null, weatherResponse: CurrentWeatherResponse? = null): Bitmap {
     val id = locationEntity?.weatherCondition ?: weatherResponse!!.weather[0].id.toString()
     val context = root.context
 

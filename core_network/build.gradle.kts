@@ -48,7 +48,7 @@ dependencies {
 
     implementation(libs.timber)
 
-    testImplementation(libs.kotlin.testing.coroutines)
+    implementation(libs.kotlin.coroutines)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.kapt)

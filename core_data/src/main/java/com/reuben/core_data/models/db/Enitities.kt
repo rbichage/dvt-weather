@@ -36,3 +36,11 @@ data class ForeCastEntity(
         @ColumnInfo(name = "lastUpdated") val lastUpdated: Long,
         @ColumnInfo(name = "weatherCondition") val weatherCondition: String
 )
+
+@Entity(tableName = "forecasts")
+data class HourlyForeCastEntity(
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "timeOfDay")
+        val timeOfDay: Long,
+        @ColumnInfo(name = "normalTemp") val temp: String,
+        @ColumnInfo(name = "weatherCondition") val weatherCondition: String
+)

@@ -1,8 +1,7 @@
 package com.reuben.core_common.strings
 
-import java.util.Locale
+import java.util.*
 
-object StringUtils {
     fun String.capitalizeWords(): String {
 
         val initial = StringBuilder()
@@ -23,4 +22,3 @@ object StringUtils {
 
         return initial.toString()
     }
-}

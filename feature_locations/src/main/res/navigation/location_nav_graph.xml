@@ -11,8 +11,11 @@
         android:label="fragment_cities_list"
         tools:layout="@layout/fragment_location_list">
         <action
-            android:id="@+id/action_citiesListFragment_to_mapFragment"
+            android:id="@+id/toMapFragment"
             app:destination="@id/mapFragment"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+
             app:popUpTo="@id/locationsListFragment"
             app:popUpToInclusive="true" />
 
@@ -21,12 +24,6 @@
         android:id="@+id/mapFragment"
         android:name="com.reuben.feature_locations.ui.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map">
-        <action
-            android:id="@+id/action_mapFragment_to_citiesListFragment"
-            app:destination="@id/locationsListFragment"
-            app:popUpTo="@id/mapFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_map" />
 
 </navigation>

@@ -10,12 +10,14 @@ import com.reuben.core_common.location.CurrentLocationHelper
 import com.reuben.core_common.location.geoCodeThisLocation
 import com.reuben.core_common.network.ApiResponse
 import com.reuben.core_common.network.ErrorHolder
-import com.reuben.core_data.mappers.weather.toCurrentLocationEntity
 import com.reuben.core_data.mappers.weather.toForeCastEntity
 import com.reuben.core_data.models.db.LocationEntity
 import com.reuben.core_data.models.weather.CurrentWeatherResponse
-import com.reuben.core_data.models.weather.OneShotForeCastResponse
+import com.reuben.core_data.models.weather.Daily
+import com.reuben.core_data.models.weather.OneCallForeCastResponse
+import com.reuben.core_di.CoroutineIODispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -27,10 +29,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class WeatherViewModel @Inject constructor(
         private val currentLocationHelper: CurrentLocationHelper,
         private val geocoder: Geocoder,
-        private val homeRepository: HomeRepository,
+        private val foreCastRepository: ForeCastRepository,
+        @CoroutineIODispatcher val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState.Initial)
@@ -52,44 +55,28 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getCurrentWeather(location: Location, shouldGeoCode: Boolean = true, locationName: String = "") {
-        _uiState.value = HomeUiState.Loading
-
-        viewModelScope.launch {
-            val response = withContext(Dispatchers.IO) { homeRepository.getCurrentWeatherByLocation(location) }
-
-            when (response) {
-                is ApiResponse.Success -> {
-                    val data = response.value
-                    val entity = data.toCurrentLocationEntity(locationName = locationName)
-                    insertLocation(entity)
-                    if (shouldGeoCode) {
-                        geoCodeLocation(location, entity)
-                    }
-                    getForeCastFromLocation(location)
-                    _uiState.value = (HomeUiState.CurrentWeather(data))
-                }
-                is ApiResponse.Failure -> {
-                    _uiState.value = (HomeUiState.Error(response.errorHolder))
-
-                }
-            }
-        }
-
-    }
-
-
-    private fun getForeCastFromLocation(location: Location) {
+    fun getForeCastFromLocation(location: Location) {
         viewModelScope.launch {
             _uiState.value = (HomeUiState.Loading)
 
             when (val response = withContext(Dispatchers.IO) {
-                homeRepository.getNextForeCastByLocation(location)
+                foreCastRepository.getForeCastForLocation(location)
             }) {
+
                 is ApiResponse.Success -> {
-                    val data = response.value
-                    insertToForecastDb(data)
-                    _uiState.value = (HomeUiState.ForecastData(data))
+
+
+                    val currentCondition = response.value.currentWeather
+                    val hourlyForeCast = response.value.hourlyForecast
+                    val today = response.value.daily[0]
+
+                    _uiState.value = (HomeUiState.ForecastData(
+                            currentCondition = currentCondition,
+                            todaysWeather = today,
+                            weeklyForecast = response.value.daily,
+                            hourlyForeCast = hourlyForeCast
+
+                    ))
                 }
                 is ApiResponse.Failure -> {
                     _uiState.value = (HomeUiState.Error(response.errorHolder))
@@ -100,11 +87,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun insertToForecastDb(
-            oneShotForeCastResponse: OneShotForeCastResponse
+            oneCallForeCastResponse: OneCallForeCastResponse
     ) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            val entities = oneShotForeCastResponse
+            val entities = oneCallForeCastResponse
                     .toForeCastEntity("")
                     .toMutableList()
                     .also { it.removeAt(0) }
@@ -112,27 +99,23 @@ class HomeViewModel @Inject constructor(
 
             Timber.e("entities $entities")
             for (entity in entities) {
-                homeRepository.insertForeCast(entity)
+                weatherRepository.insertForeCast(entity)
             }
 
         }
     }
 
 
-    fun deleteCurrentLocation() = viewModelScope.launch(Dispatchers.IO) {
-        homeRepository.deleteCurrentLocation()
-    }
-
     private fun insertLocation(locationEntity: LocationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            homeRepository.insertCurrentLocation(locationEntity)
+            weatherRepository.insertCurrentLocation(locationEntity)
         }
     }
 
 
-    fun getForecasts() = homeRepository.getAllForeCasts()
+    fun getForecasts() = weatherRepository.getAllForeCasts()
 
-    fun getAllLocations() = homeRepository.getAllLocations()
+    fun getAllLocations() = weatherRepository.getAllLocations()
 
     private fun geoCodeLocation(location: Location, entity: LocationEntity) {
         viewModelScope.launch(exceptionHandler) {
@@ -158,7 +141,7 @@ class HomeViewModel @Inject constructor(
 
     private fun updateCurrentEntity(entity: LocationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            homeRepository.updateLocation(entity)
+            weatherRepository.updateLocation(entity)
         }
     }
 
@@ -168,7 +151,13 @@ sealed interface HomeUiState {
     object Loading : HomeUiState
     object Initial : HomeUiState
     data class CurrentWeather(val data: CurrentWeatherResponse) : HomeUiState
-    data class ForecastData(val data: OneShotForeCastResponse) : HomeUiState
+    data class ForecastData(
+            val weeklyForecast: List<Daily>,
+            val currentCondition: Daily,
+            val todaysWeather: Daily,
+            val hourlyForeCast: List<Daily>
+    ) : HomeUiState
+
     data class CurrentLocation(val location: Location) : HomeUiState
     data class Error(val errorHolder: ErrorHolder) : HomeUiState
     data class GeocodeError(val message: String) : HomeUiState

@@ -6,7 +6,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("io.gitlab.arturbosch.detekt")
 
 }
 
@@ -65,28 +64,23 @@ dependencies {
     implementation(project(":feature_locations"))
     implementation(project(":feature_search"))
     implementation(project(":feature_weather"))
-
+    testImplementation(project(":core_testing"))
 
     testImplementation(libs.testing.junit)
 
     debugImplementation(libs.androidx.testing.fragment)
-    testImplementation(libs.androidx.testing.junit)
     androidTestImplementation(libs.androidx.testing.runner)
     androidTestImplementation(libs.androidx.testing.core)
     androidTestImplementation(libs.androidx.testing.espresso.core)
     androidTestImplementation(libs.androidx.testing.espresso.contrib)
 
     testImplementation(libs.android.testing.archcore)
-
+    testImplementation(libs.androidx.testing.junit)
     testImplementation(libs.kotlin.testing.coroutines)
-
     testImplementation(libs.testing.mockk)
     testImplementation(libs.testing.robolectric)
-
     testImplementation(libs.google.truth)
-
     testImplementation(libs.mockwebserver)
-
     testImplementation(libs.testing.livedata)
 
     implementation(libs.bundles.androidx.ui)
@@ -116,21 +110,6 @@ dependencies {
 
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
-
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config = files("${project.rootDir}/detekt.yml")
-    baseline = file("${project.rootDir}/detekt-baseline.xml")
-
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        txt.required.set(true)
-        sarif.required.set(true)
-    }
 
 }
 

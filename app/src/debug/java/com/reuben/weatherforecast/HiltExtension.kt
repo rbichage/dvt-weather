@@ -9,7 +9,6 @@ import androidx.core.util.Preconditions
 import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import com.dvt.weatherforecast.HiltTestActivity
 import com.dvt.weatherforecast.R
 
 @SuppressLint("RestrictedApi")

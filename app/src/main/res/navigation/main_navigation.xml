@@ -3,26 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/weatherFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/weatherFragment"
         android:name="com.reuben.feature_weather.ui.WeatherFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_weather">
         <action
             android:id="@+id/toSavedLocations"
             app:destination="@id/savedLocationsFragment"
             app:launchSingleTop="true" />
-        <argument
-            android:name="locationEntity"
-            android:defaultValue="@null"
-            app:argType="com.reuben.core_data.models.LocationEntity"
-            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/savedLocationsFragment"
         android:name="com.reuben.feature_locations.SavedLocationsFragment"
         android:label="SavedLocationsFragment"
-        tools:layout="@layout/fragment_saved_locations"/>
+        tools:layout="@layout/fragment_saved_locations" />
 </navigation>

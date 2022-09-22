@@ -5,4 +5,4 @@ sealed class ApiResponse<out T> {
     data class Failure(val errorHolder: ErrorHolder) : ApiResponse<Nothing>()
 }
 
-data class ErrorHolder(override val message: String, val statusCode: Int, val body: String) : Exception(message)
+data class ErrorHolder(override val message: String, val statusCode: Int, val body: String = "") : Exception(message)

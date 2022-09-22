@@ -35,6 +35,6 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core)
+    implementation(libs.kotlin.core)
     implementation(libs.bundles.androidx.ui)
 }

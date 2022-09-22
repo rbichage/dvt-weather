@@ -1,6 +1,6 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
     kotlin("kapt")
     id("kotlin-parcelize")
 }
@@ -37,6 +37,6 @@ dependencies {
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
 
-    implementation(libs.moshi.codegen)
     implementation(libs.moshi)
+    kapt(libs.moshi.codegen)
 }

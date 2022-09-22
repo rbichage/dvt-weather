@@ -3,6 +3,7 @@ package com.reuben.core_network.util
 import com.reuben.core_common.network.ApiResponse
 import com.reuben.core_common.network.ErrorHolder
 import com.reuben.core_network.BuildConfig
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -12,12 +13,13 @@ import org.json.JSONObject
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-suspend fun <T> apiCall(apiCall: suspend () -> T): ApiResponse<T> {
+suspend fun <T> apiCall(dispatcher: CoroutineDispatcher = Dispatchers.IO, apiCall: suspend () -> T): ApiResponse<T> {
 
-    return withContext(Dispatchers.IO) {
+    return withContext(dispatcher) {
 
         try {
             ApiResponse.Success(apiCall.invoke())
@@ -27,19 +29,22 @@ suspend fun <T> apiCall(apiCall: suspend () -> T): ApiResponse<T> {
 
             when (e) {
                 is IOException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                        ErrorHolder("Unable to connect, check your connection", 1)
                 )
 
                 is HttpException -> ApiResponse.Failure(extractHttpExceptions(e))
 
                 is UnknownHostException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                        ErrorHolder("Unable to connect, check your connection", 1)
                 )
 
                 is SocketTimeoutException -> ApiResponse.Failure(
-                        ErrorHolder("Unable to connect, check your connection", 1, "")
+                        ErrorHolder("Unable to connect, check your connection", 1)
                 )
-                else -> ApiResponse.Failure(ErrorHolder(e.message.orEmpty(), 1, ""))
+                is ConnectException -> ApiResponse.Failure(
+                        ErrorHolder("unable to connect : ${e.localizedMessage}", 1)
+                )
+                else -> ApiResponse.Failure(ErrorHolder(e.message.orEmpty(), 1))
             }
         }
     }
@@ -75,9 +80,7 @@ private fun extractHttpExceptions(e: HttpException): ErrorHolder {
 }
 
 val loggingInterceptor: HttpLoggingInterceptor
-    get() {
-        return HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-        }
-
+    get() = HttpLoggingInterceptor().apply {
+        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
     }
+

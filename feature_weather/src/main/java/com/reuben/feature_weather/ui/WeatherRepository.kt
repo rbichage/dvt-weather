@@ -1,15 +1,37 @@
 package com.reuben.feature_weather.ui
 
 import android.location.Location
+import com.reuben.core_common.network.ApiResponse
 import com.reuben.core_data.models.db.ForeCastEntity
 import com.reuben.core_data.models.db.LocationEntity
+import com.reuben.core_data.models.weather.OneCallForeCastResponse
 import com.reuben.core_database.LocationDao
 import com.reuben.core_di.WeatherApiKey
 import com.reuben.core_network.api.ApiService
 import com.reuben.core_network.util.apiCall
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor(
+interface ForeCastRepository {
+    suspend fun getForeCastForLocation(location: Location): ApiResponse<OneCallForeCastResponse>
+}
+
+class ForeCastRepositoryImpl @Inject constructor(
+        private val apiService: ApiService,
+        @WeatherApiKey private val apiKey: String,
+) : ForeCastRepository {
+    override suspend fun getForeCastForLocation(location: Location): ApiResponse<OneCallForeCastResponse> {
+        return apiCall {
+            apiService.getForecastByLocation(
+                    location.latitude.toString(),
+                    location.longitude.toString(),
+                    apiKey
+            )
+        }
+    }
+
+}
+
+class WeatherRepositoryImpl @Inject constructor(
         private val apiService: ApiService,
         @WeatherApiKey private val apiKey: String,
         private val foreCastDao: com.reuben.core_database.ForeCastDao,

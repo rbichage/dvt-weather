@@ -35,11 +35,18 @@ dependencies {
 
     implementation(project(":core_data"))
 
-    implementation(libs.androidx.core)
+    implementation(libs.kotlin.core)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.kapt)
 
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
+
+    testImplementation(libs.android.testing.archcore)
+    testImplementation(libs.androidx.testing.junit)
+    testImplementation(libs.kotlin.testing.coroutines)
+    testImplementation(libs.testing.mockk)
+    testImplementation(libs.testing.robolectric)
+    testImplementation(libs.google.truth)
 }

@@ -3,58 +3,45 @@ package com.reuben.feature_weather.ui
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.reuben.core_common.date.convertToDateTime
-import com.reuben.core_common.location.goToLocationSettings
 import com.reuben.core_common.location.isLocationEnabled
 import com.reuben.core_common.location.isLocationPermissionEnabled
 import com.reuben.core_common.location.requestLocationPermission
 import com.reuben.core_common.strings.StringUtils.capitalizeWords
 import com.reuben.core_data.models.db.LocationEntity
 import com.reuben.core_data.models.weather.CurrentWeatherResponse
-import com.reuben.core_navigation.navigation.WeatherNavDirections
 import com.reuben.core_ui.binding.viewBinding
+import com.reuben.core_ui.goToLocationSettings
 import com.reuben.core_ui.makeInvisible
 import com.reuben.core_ui.show
 import com.reuben.core_ui.showErrorDialog
 import com.reuben.core_ui.toast
 import com.reuben.feature_weather.R
 import com.reuben.feature_weather.databinding.FragmentWeatherBinding
-import com.reuben.feature_weather.util.ui.changeBackground
-import com.reuben.feature_weather.util.ui.updateStatusBarColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class WeatherFragment : Fragment(R.layout.fragment_weather) {
     private val binding by viewBinding(factory = FragmentWeatherBinding::bind)
 
-    @Inject
-    lateinit var weatherNavDirections: WeatherNavDirections
-
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val weatherViewModel: WeatherViewModel by viewModels()
 
     private val foreCastAdapter by lazy {
         ForeCastAdapter()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,9 +52,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
     }
 
     private fun setClickListeners() {
-        binding.fabCities.setOnClickListener {
-            weatherNavDirections.navigateToLocations(findNavController())
-        }
+
     }
 
     private fun getLocationsFromDb() {
@@ -75,7 +60,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
 
             awaitAll(
                     async {
-                        homeViewModel.getAllLocations().collectLatest { locationEntities ->
+                        weatherViewModel.getAllLocations().collectLatest { locationEntities ->
 
                             if (locationEntities.isNotEmpty()) {
                                 val locationEntity = locationEntities.filter { it.isCurrent }
@@ -84,9 +69,9 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
 
                                     val current = locationEntity.first()
 
-                                    val bitMap = binding.changeBackground(current)
+//                                    val bitMap = binding.changeBackground(current)
 
-                                    activity?.updateStatusBarColor(bitMap)
+//                                    activity?.updateStatusBarColor(bitMap)
 
                                     Timber.e("location entity $locationEntity")
 
@@ -99,7 +84,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
                     },
 
                     async {
-                        homeViewModel.getForecasts().collectLatest { foreCasts ->
+                        weatherViewModel.getForecasts().collectLatest { foreCasts ->
                             Timber.e("forecast: $foreCasts")
                             if (foreCasts.isNotEmpty()) {
                                 with(binding.weeeklyRecycler) {
@@ -121,21 +106,21 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
 
         if (currentContext.isLocationPermissionEnabled()) {
             if (currentContext.isLocationEnabled()) {
-                homeViewModel.getCurrentLocation()
+                weatherViewModel.getCurrentLocation()
             } else {
                 currentContext.goToLocationSettings()
             }
         } else {
             currentContext.requestLocationPermission(
                     onPermissionAccepted = {
-                        homeViewModel.getCurrentLocation()
+                        weatherViewModel.getCurrentLocation()
                     },
                     onPermissionDenied = {
                         currentContext.toast("Well, well. well...")
 
                     },
                     shouldShowRationale = {
-                        currentContext.toast("Enable permissions hombre")
+                        currentContext.toast("Enable permissions pal")
                     }
             )
         }
@@ -144,7 +129,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.uiState.collect { homeState ->
+                weatherViewModel.uiState.collect { homeState ->
                     when (homeState) {
                         is HomeUiState.CurrentWeather -> {
                             updateViews(homeState.data)
@@ -159,7 +144,9 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
                                     positiveText = "Retry",
                                     negativeText = "Cancel",
                                     positiveAction = { },
-                                    negativeAction = { activity?.onBackPressedDispatcher?.onBackPressed() }
+                                    negativeAction = {
+                                        activity?.onBackPressedDispatcher?.onBackPressed()
+                                    }
                             )
                         }
                         is HomeUiState.ForecastData -> {
@@ -189,8 +176,8 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
 
     @SuppressLint("SetTextI18n")
     private fun updateViews(response: CurrentWeatherResponse) {
-        val bitMap = binding.changeBackground(null, response)
-        activity?.updateStatusBarColor(bitMap)
+//        val bitMap = binding.changeBackground(null, response)
+//        activity?.updateStatusBarColor(bitMap)
 
 
         with(binding) {
@@ -257,7 +244,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
     }
 
     private fun getCurrentWeather(location: Location, shouldGeoCode: Boolean) {
-        homeViewModel.getCurrentWeather(location, shouldGeoCode)
+        weatherViewModel.getCurrentWeather(location, shouldGeoCode)
     }
 
 }

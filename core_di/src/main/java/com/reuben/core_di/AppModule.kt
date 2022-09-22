@@ -15,8 +15,7 @@ object AppModule {
     @Provides
     @WeatherApiKey
     @Singleton
-    fun provideApiKey(@ApplicationContext context: Context): String =
-            context.getString(R.string.api_key)
+    fun provideApiKey(@ApplicationContext context: Context): String = context.getString(com.reuben.core_ui.R.string.api_key)
 
 }
 

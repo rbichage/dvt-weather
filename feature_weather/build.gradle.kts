@@ -17,10 +17,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+//            isIncludeAndroidResources = true
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        getByName("debug") {
+            isMinifyEnabled = false
+            isTestCoverageEnabled = true
         }
     }
     compileOptions {
@@ -46,6 +58,7 @@ dependencies {
     implementation(project(":core_network"))
     implementation(project(":core_navigation"))
     implementation(project(":core_di"))
+    implementation(project(":core_testing"))
 
     testImplementation(libs.testing.junit)
 
@@ -59,6 +72,7 @@ dependencies {
     testImplementation(libs.android.testing.archcore)
 
     testImplementation(libs.kotlin.testing.coroutines)
+    testImplementation("app.cash.turbine:turbine:0.9.0")
 
     testImplementation(libs.testing.mockk)
     testImplementation(libs.testing.robolectric)
@@ -74,11 +88,22 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     kapt(libs.lifecycle.common.java8)
 
+    implementation(libs.moshi)
+    kapt(libs.moshi.codegen)
+
+    implementation(libs.okhttp.logging)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.kapt)
 
     implementation(libs.timber)
 
     implementation(libs.bundles.navigation)
+
+    implementation(libs.bundles.room)
+    kapt(libs.room.compiler)
 
 }

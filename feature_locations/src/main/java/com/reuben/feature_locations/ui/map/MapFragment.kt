@@ -13,10 +13,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.reuben.core_common.location.goToLocationSettings
 import com.reuben.core_common.location.isLocationEnabled
 import com.reuben.core_common.location.isLocationPermissionEnabled
 import com.reuben.core_common.location.requestLocationPermission
+import com.reuben.core_ui.goToLocationSettings
 import com.reuben.core_ui.toast
 import com.reuben.feature_locations.R
 import com.reuben.feature_locations.databinding.FragmentMapBinding
@@ -40,8 +40,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(binding.mapView.id) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        checkForLocationPermission()
-        observeViewModel()
 
     }
 
@@ -74,6 +72,10 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 //            setMapStyle(MapStyleOptions.loadRawResourceStyle(binding.root.context, R.raw.maps_style))
 
         }
+
+        checkForLocationPermission()
+
+        observeViewModel()
 
     }
 

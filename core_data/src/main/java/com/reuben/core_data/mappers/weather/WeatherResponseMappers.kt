@@ -4,7 +4,7 @@ import com.reuben.core_common.date.convertTimeStamp
 import com.reuben.core_data.models.db.ForeCastEntity
 import com.reuben.core_data.models.db.LocationEntity
 import com.reuben.core_data.models.weather.CurrentWeatherResponse
-import com.reuben.core_data.models.weather.OneShotForeCastResponse
+import com.reuben.core_data.models.weather.OneCallForeCastResponse
 
 fun CurrentWeatherResponse.toCurrentLocationEntity(locationName: String = ""): LocationEntity {
 
@@ -41,7 +41,7 @@ fun CurrentWeatherResponse.toNewLocationEntity(locationName: String): LocationEn
 }
 
 
-fun OneShotForeCastResponse.toForeCastEntity(name: String): List<ForeCastEntity> =
+fun OneCallForeCastResponse.toForeCastEntity(name: String): List<ForeCastEntity> =
         daily.map { forecast ->
             ForeCastEntity(
                     day = convertTimeStamp(forecast.dt.toLong()),

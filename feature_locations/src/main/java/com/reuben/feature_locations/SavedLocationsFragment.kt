@@ -48,11 +48,11 @@ class SavedLocationsFragment : Fragment(R.layout.fragment_saved_locations) {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Timber.e("$tab unselected")
+                Timber.d("$tab unselected")
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                Timber.e("tab reselected")
+                Timber.d("tab reselected")
             }
 
         })

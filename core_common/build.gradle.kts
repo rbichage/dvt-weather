@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
 }
 
 android {
@@ -31,7 +32,8 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core)
+    implementation(libs.kotlin.core)
+    implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.google.services)
     implementation(libs.bundles.google.services)
     implementation(libs.dexter)
